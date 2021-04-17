@@ -12,4 +12,12 @@
 *.out
 
 # Dependency directories (remove the comment below to include it)
-# vendor/
+ vendor/
+
+# IDE directories
+.idea/
+.vscode/
+
+# Configuration keys
+config.yaml
+key*.json
