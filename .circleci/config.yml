@@ -1,12 +1,52 @@
 # Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
+
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - proto
+      - build:
+          requires:
+            - proto
+
+
 jobs:
+  proto:
+    executor:
+      machine:
+        image: ubuntu-2004:202101-01
+        docker_layer_caching: true
+    steps:
+      - checkout
+      - create_concatenated_proto_lock:
+          filename: proto.lock
+      - restore_cache:
+          keys:
+            - proto-v1-{{ checksum "proto.lock" }}
+      - run:
+          name: Generate protos
+          command: make proto
+      - save_cache:
+          key: proto-v1-{{ checksum "proto.lock" }}
+          paths:
+            - "gen"
+
+
   build:
     working_directory: ~/repo
     docker:
       - image: circleci/golang:1.15.8
     steps:
       - checkout
+
+      - create_concatenated_proto_lock:
+          filename: proto.lock
+      - restore_cache:
+          keys:
+            - proto-v1-{{ checksum "proto.lock" }}
+
       - restore_cache:
           keys:
             - go-mod-v4-{{ checksum "go.sum" }}
@@ -17,6 +57,7 @@ jobs:
           key: go-mod-v4-{{ checksum "go.sum" }}
           paths:
             - "/go/pkg/mod"
+
       - run:
           name: Run tests
           command: |
@@ -24,3 +65,15 @@ jobs:
             gotestsum --junitfile /tmp/test-reports/unit-tests.xml
       - store_test_results:
           path: /tmp/test-reports
+
+
+commands:
+  create_concatenated_proto_lock:
+    description: "Concatenate all proto files into single file. This file is used as checksum source for part of caching key."
+    parameters:
+      filename:
+        type: string
+    steps:
+      - run:
+          name: Combine proto files to single file
+          command: find proto -name '*.proto' | sort | xargs cat > << parameters.filename >>
