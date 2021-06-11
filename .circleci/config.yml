@@ -36,7 +36,7 @@ jobs:
   build:
     working_directory: ~/repo
     docker:
-      - image: circleci/golang:1.15.8
+      - image: cimg/go:1.16.5
     steps:
       - checkout
 
