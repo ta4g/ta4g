@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package bar;
+
+option go_package = "github.com/ta4g/ta4g/gen/proto/interval/bar";
+import "google/protobuf/timestamp.proto";
+
+message StandardBar {
+  // Time interval of this bar
+  google.protobuf.Timestamp Time = 1;
+
+  // Open price for the current bar
+  double Open = 2;
+
+  // High price for the current bar
+  double High = 3;
+
+  // Low price for the current bar
+  double Low = 4;
+
+  // Close price for the current bar
+  double Close = 5;
+
+  // Volume of shares, options, coins, etc traded during this bar
+  double Volume = 6;
+
+  // OpenInterest (Optional) amount of derivatives currently outstanding for this bar
+  // If there is no open interest then this will be -1, to indicate no data
+  int64 OpenInterest = 7;
+}
+
+message StandardBars {
+  repeated StandardBar bars = 1;
+}

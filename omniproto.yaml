@@ -1,0 +1,13 @@
+rootdir: proto
+sources:
+  - interval/bar/bar.proto
+output: gen
+plugins:
+  - name: go
+    args: paths=source_relative
+debug: true
+descriptors:
+  output: gen/descriptors.pb
+  enabled: true
+  include_imports: true
+  include_source_info: true
