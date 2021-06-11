@@ -14,10 +14,9 @@ workflows:
 
 jobs:
   proto:
-    executor:
-      machine:
-        image: ubuntu-2004:202101-01
-        docker_layer_caching: true
+    machine:
+      image: ubuntu-2004:202101-01
+      docker_layer_caching: true
     steps:
       - checkout
       - create_concatenated_proto_lock:
