@@ -1,6 +1,7 @@
 rootdir: proto
 sources:
   - interval/bar/bar.proto
+  - interval/trade/trade.proto
 output: gen
 plugins:
   - name: go

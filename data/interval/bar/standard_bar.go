@@ -10,13 +10,13 @@ import (
 var _ Bar = &StandardBar{}
 
 type StandardBar struct {
-	UnixTime     int64   `csv:"time" avro:"time"`
-	Open         float64 `csv:"open" avro:"open"`
-	High         float64 `csv:"high" avro:"high"`
-	Low          float64 `csv:"low" avro:"low"`
-	Close        float64 `csv:"close" avro:"close"`
-	Volume       float64 `csv:"volume" avro:"volume"`
-	OpenInterest int64   `csv:"open_interest" avro:"open_interest"`
+	UnixTime     int64   `csv:"time" avro:"time" json:"time"`
+	Open         float64 `csv:"open" avro:"open" json:"open"`
+	High         float64 `csv:"high" avro:"high" json:"high"`
+	Low          float64 `csv:"low" avro:"low" json:"low"`
+	Close        float64 `csv:"close" avro:"close" json:"close"`
+	Volume       float64 `csv:"volume" avro:"volume" json:"volume"`
+	OpenInterest int64   `csv:"open_interest" avro:"open_interest" json:"open_interest"`
 }
 
 func New(

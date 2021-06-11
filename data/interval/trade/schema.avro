@@ -1,0 +1,26 @@
+{
+    "type": "record",
+    "name": "standard_order",
+    "namespace": "ta4g.ta4g",
+    "fields": [
+	    {"name": "time", "type": "long"},
+	    {
+            "name": "items",
+            "type": {
+                "type": "array",
+                "items": {
+                    "type": "record",
+                    "name": "standard_order_item",
+                    "namespace": "ta4g.ta4g",
+                    "fields": [
+                        {"name": "order_direction",   "type": "int"},
+                        {"name": "symbol",            "type": "string"},
+                        {"name": "is_option",         "type": "boolean"},
+                        {"name": "unit_quantity",     "type": "double"},
+                        {"name": "price_per_unit",    "type": "double"}
+                    ]
+                }
+            }
+        }
+    ]
+}

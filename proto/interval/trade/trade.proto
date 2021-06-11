@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package trade;
+
+option go_package = "github.com/ta4g/ta4g/gen/proto/interval/trade";
+import "google/protobuf/timestamp.proto";
+
+message Order {
+  // Time interval of this bar
+  google.protobuf.Timestamp time = 1;
+
+  // Items in this order
+  repeated OrderItem items = 2;
+}
+
+message OrderItem {
+  // Which direction is the order item going: sell or buy?
+  int64 order_direction = 1;
+  // What are we trading
+  string symbol = 2;
+  // Is this an option? This is used to determine margin later
+  bool is_option = 3;
+  // Number of units
+  double unit_quantity = 4;
+  // Price per unit
+  double price_per_unit = 5;
+}
+
+message Orders {
+  repeated Order orders = 1;
+}
