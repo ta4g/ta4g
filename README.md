@@ -2,6 +2,9 @@
 
 [![CircleCI](https://circleci.com/gh/ta4g/ta4g.svg?style=svg)](https://circleci.com/gh/ta4g/ta4g.svg?style=svg)
 
+![Github](https://github.com/ta4g/ta4g/actions/workflows/go.yml/badge.svg)
+
+
 ***Technical Analysis For Go***
 
 Ta4g is an open source library for [technical analysis](http://en.wikipedia.org/wiki/Technical_analysis). 
