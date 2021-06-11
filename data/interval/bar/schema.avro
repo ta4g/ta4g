@@ -1,0 +1,14 @@
+{
+    "type": "record",
+    "name": "standard_bar",
+    "namespace": "ta4g.ta4g",
+    "fields": [
+	    {"name": "time",           "type": "long"},
+	    {"name": "open",           "type": "double"},
+	    {"name": "high",           "type": "double"},
+	    {"name": "low",            "type": "double"},
+	    {"name": "close",          "type": "double"},
+	    {"name": "volume",         "type": "double"},
+	    {"name": "open_interest",  "type": "long"}
+    ]
+}

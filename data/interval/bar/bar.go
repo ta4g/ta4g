@@ -1,7 +1,6 @@
 package bar
 
 import (
-	"math/big"
 	"time"
 )
 
@@ -11,24 +10,28 @@ import (
 // and allows us to understand what happened during in interval.
 //
 type Bar interface {
-	// Time interval of this bar
-	Time() time.Time
+	// GetTime interval of this bar
+	GetTime() time.Time
 
-	// Open price for the current bar
-	Open() *big.Float
+	// GetOpen price for the current bar
+	GetOpen() float64
 
-	// High price for the current bar
-	High() *big.Float
+	// GetHigh price for the current bar
+	GetHigh() float64
 
-	// Low price for the current bar
-	Low() *big.Float
+	// GetLow price for the current bar
+	GetLow() float64
 
-	// Close price for the current bar
-	Close() *big.Float
+	// GetClose price for the current bar
+	GetClose() float64
 
-	// Volume of shares, options, coins, etc traded during this bar
-	Volume() *big.Int
+	// GetVolume of shares, options, coins, etc traded during this bar
+	GetVolume() float64
 
-	// OpenInterest (Optional) amount of derivatives currently outstanding for this bar
-	OpenInterest() *big.Int
+	// GetOpenInterest (Optional) amount of derivatives currently outstanding for this bar
+	// If there is no open interest then this will be -1, to indicate no data
+	GetOpenInterest() int64
+
+	// Clone makes a copy of the underlying bar
+	Clone() (Bar, error)
 }

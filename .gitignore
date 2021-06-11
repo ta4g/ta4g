@@ -18,6 +18,8 @@
 .idea/
 .vscode/
 
+gen/
+
 # Configuration keys
 config.yaml
 key*.json
