@@ -7,26 +7,26 @@ import "google/protobuf/timestamp.proto";
 
 message StandardBar {
   // Time interval of this bar
-  google.protobuf.Timestamp Time = 1;
+  google.protobuf.Timestamp time = 1;
 
   // Open price for the current bar
-  double Open = 2;
+  double open = 2;
 
   // High price for the current bar
-  double High = 3;
+  double high = 3;
 
   // Low price for the current bar
-  double Low = 4;
+  double low = 4;
 
   // Close price for the current bar
-  double Close = 5;
+  double close = 5;
 
   // Volume of shares, options, coins, etc traded during this bar
-  double Volume = 6;
+  double volume = 6;
 
   // OpenInterest (Optional) amount of derivatives currently outstanding for this bar
   // If there is no open interest then this will be -1, to indicate no data
-  int64 OpenInterest = 7;
+  int64 open_interest = 7;
 }
 
 message StandardBars {
