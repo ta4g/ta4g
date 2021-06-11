@@ -4,7 +4,7 @@
 
 ***Technical Analysis For Go***
 
-Ta4g is an open source Java library for [technical analysis](http://en.wikipedia.org/wiki/Technical_analysis). 
+Ta4g is an open source library for [technical analysis](http://en.wikipedia.org/wiki/Technical_analysis). 
 
 It provides the basic components for creation, evaluation and execution of trading strategies.
 
