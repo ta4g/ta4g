@@ -1,4 +1,4 @@
-package trade
+package orders
 
 import (
 	"bufio"
@@ -17,6 +17,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"io"
 	"io/ioutil"
+	"time"
 )
 
 // Loader reads and writes the Order data to the desired format.
@@ -25,8 +26,8 @@ import (
 // 2. Avro
 // 3. Proto
 type Loader interface {
-	Read(ctx context.Context, input io.Reader) ([]Order, error)
-	Write(ctx context.Context, output io.Writer, input []Order) error
+	Read(ctx context.Context, input io.Reader) ([]*Order, error)
+	Write(ctx context.Context, output io.Writer, input []*Order) error
 }
 
 // Compile time type assertions
@@ -61,7 +62,7 @@ func NewCSVLoader() Loader {
 	return &csvLoader{}
 }
 
-func (c csvLoader) Read(ctx context.Context, input io.Reader) ([]Order, error) {
+func (c csvLoader) Read(ctx context.Context, input io.Reader) ([]*Order, error) {
 	logger := ctxzap.Extract(ctx)
 
 	// Pull in the CSV
@@ -72,7 +73,7 @@ func (c csvLoader) Read(ctx context.Context, input io.Reader) ([]Order, error) {
 	}
 
 	// Read the rows
-	var bars []StandardOrder
+	var bars []Order
 	err = csvutil.Unmarshal(data, &bars)
 	if nil != err {
 		logger.Error("Failed to unmarshal rows", zap.Error(err))
@@ -80,32 +81,23 @@ func (c csvLoader) Read(ctx context.Context, input io.Reader) ([]Order, error) {
 	}
 
 	// Type conversion
-	output := make([]Order, 0, len(bars))
-	for _, b := range bars {
-		newOrder, err := b.Clone()
-		if nil != err {
-			logger.Error("Failed to clone bar", zap.Error(err))
-			return nil, err
-		}
-		output = append(output, newOrder)
+	output := make([]*Order, 0, len(bars))
+	for _, item := range bars {
+		output = append(output, item.Clone())
 	}
 	return output, nil
 }
 
-func (c csvLoader) Write(ctx context.Context, output io.Writer, input []Order) error {
+func (c csvLoader) Write(ctx context.Context, output io.Writer, input []*Order) error {
 	logger := ctxzap.Extract(ctx)
 
 	// Type conversion
-	bars := make([]StandardOrder, 0, len(input))
-	for _, b := range input {
-		value, ok := b.(*StandardOrder)
-		if !ok {
-			value = copyToStandardOrder(b)
-		}
-		bars = append(bars, *value)
+	items := make([]Order, 0, len(input))
+	for _, value := range input {
+		items = append(items, *value)
 	}
 
-	data, err := csvutil.Marshal(bars)
+	data, err := csvutil.Marshal(items)
 	if nil != err {
 		logger.Error("Failed to marshal rows", zap.Error(err))
 		return status.Error(codes.Internal, err.Error())
@@ -128,12 +120,12 @@ func NewJsonNewLineLoader() Loader {
 	return &jsonNewLineLoader{}
 }
 
-func (j jsonNewLineLoader) Read(ctx context.Context, input io.Reader) ([]Order, error) {
+func (j jsonNewLineLoader) Read(ctx context.Context, input io.Reader) ([]*Order, error) {
 	logger := ctxzap.Extract(ctx)
 
 	// Pull in the CSV
 	reader := bufio.NewReader(input)
-	output := make([]Order, 0)
+	output := make([]*Order, 0)
 	for {
 		// Read the rows line by line
 		data, err := reader.ReadBytes('\n')
@@ -149,24 +141,24 @@ func (j jsonNewLineLoader) Read(ctx context.Context, input io.Reader) ([]Order, 
 		}
 
 		// Now parse the JSON and add it to the output
-		bar := &StandardOrder{}
-		err = json.Unmarshal(data, bar)
+		item := &Order{}
+		err = json.Unmarshal(data, item)
 		if nil != err {
 			logger.Error("Failed to unmarshal row", zap.Error(err))
 			return nil, status.Error(codes.Internal, err.Error())
 		}
-		output = append(output, bar)
+		output = append(output, item)
 	}
+
 	return output, nil
 }
 
-func (j jsonNewLineLoader) Write(ctx context.Context, writer io.Writer, bars []Order) error {
+func (j jsonNewLineLoader) Write(ctx context.Context, writer io.Writer, input []*Order) error {
 	logger := ctxzap.Extract(ctx)
 
-	for _, bar := range bars {
+	for _, item := range input {
 		// Serialize as json
-		stdOrder := copyToStandardOrder(bar)
-		data, err := json.Marshal(stdOrder)
+		data, err := json.Marshal(item)
 		if nil != err {
 			logger.Error("Failed to marshal row", zap.Error(err))
 			return status.Error(codes.Internal, err.Error())
@@ -197,14 +189,14 @@ func NewAvroLoader() Loader {
 	return &avroLoader{}
 }
 
-func (a avroLoader) Read(ctx context.Context, input io.Reader) ([]Order, error) {
+func (a avroLoader) Read(ctx context.Context, input io.Reader) ([]*Order, error) {
 	logger := ctxzap.Extract(ctx)
 
 	decoder := avro.NewDecoderForSchema(avroSchema, input)
 
-	output := make([]Order, 0)
+	output := make([]*Order, 0)
 	for {
-		stdOrder := &StandardOrder{}
+		stdOrder := &Order{}
 		err := decoder.Decode(stdOrder)
 		if nil != err && err == io.EOF {
 			break
@@ -218,16 +210,12 @@ func (a avroLoader) Read(ctx context.Context, input io.Reader) ([]Order, error) 
 	return output, nil
 }
 
-func (a avroLoader) Write(ctx context.Context, output io.Writer, input []Order) error {
+func (a avroLoader) Write(ctx context.Context, output io.Writer, input []*Order) error {
 	logger := ctxzap.Extract(ctx)
 
 	encoder := avro.NewEncoderForSchema(avroSchema, output)
-	for _, bar := range input {
-		stdOrder, ok := bar.(*StandardOrder)
-		if !ok {
-			stdOrder = copyToStandardOrder(bar)
-		}
-		err := encoder.Encode(stdOrder)
+	for _, item := range input {
+		err := encoder.Encode(item)
 		if nil != err {
 			logger.Error("Failed to marshal row", zap.Error(err))
 			return status.Error(codes.Internal, err.Error())
@@ -244,7 +232,7 @@ func NewProtoLoader() Loader {
 	return &protoLoader{}
 }
 
-func (a protoLoader) Read(ctx context.Context, input io.Reader) ([]Order, error) {
+func (a protoLoader) Read(ctx context.Context, input io.Reader) ([]*Order, error) {
 	logger := ctxzap.Extract(ctx)
 
 	data, err := ioutil.ReadAll(input)
@@ -260,49 +248,55 @@ func (a protoLoader) Read(ctx context.Context, input io.Reader) ([]Order, error)
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	// Convert the bars
-	orders := make([]Order, 0)
+	// Convert the rows
+	output := make([]*Order, 0)
 	for _, pbOrder := range messages.Orders {
-		orderItems := make([]OrderItem, 0, len(pbOrder.Items))
-		for _, pbOrderitem := range pbOrder.Items {
-			orderItems = append(orderItems, NewOrderItem(
-				OrderDirection(pbOrderitem.OrderDirection),
-				pbOrderitem.Symbol,
-				pbOrderitem.IsOption,
-				pbOrderitem.UnitQuantity,
-				pbOrderitem.PricePerUnit,
-			))
+		// Convert them to OrderItems
+		orderItems := make([]*OrderItem, 0, len(pbOrder.Items))
+		for _, item := range pbOrder.Items {
+			orderItems = append(
+				orderItems,
+				&OrderItem{
+					Direction:         Direction(item.Direction),
+					ItemType:          ItemType(item.ItemType),
+					Symbol:            item.Symbol,
+					Amount:            item.Amount,
+					QuantityPerAmount: item.QuantityPerAmount,
+					Price:             item.Price,
+				},
+			)
 		}
-
-		row := NewStandardOrder(
+		// Now make an order
+		row := NewOrder(
 			pbOrder.GetTime().AsTime(),
 			orderItems...,
 		)
-		orders = append(orders, row)
+		output = append(output, row)
 	}
-	return orders, nil
+	return output, nil
 }
 
-func (a protoLoader) Write(ctx context.Context, output io.Writer, input []Order) error {
+func (a protoLoader) Write(ctx context.Context, output io.Writer, input []*Order) error {
 	logger := ctxzap.Extract(ctx)
 
 	// Type conversion
 	pbOrders := make([]*pb.Order, 0, len(input))
 	for _, orderItem := range input {
-		items := orderItem.GetItems()
+		items := orderItem.OrderItems
 		orderItems := make([]*pb.OrderItem, 0, len(items))
 		for _, item := range items {
 			orderItems = append(orderItems, &pb.OrderItem{
-				OrderDirection: int64(item.GetOrderDirection()),
-				Symbol:         item.GetSymbol(),
-				IsOption:       item.GetIsOption(),
-				UnitQuantity:   item.GetUnitQuantity(),
-				PricePerUnit:   item.GetPricePerUnit(),
+				Direction:         int64(item.Direction),
+				ItemType:          int64(item.ItemType),
+				Symbol:            item.Symbol,
+				Amount:            item.Amount,
+				QuantityPerAmount: item.QuantityPerAmount,
+				Price:             item.Price,
 			})
 		}
 
 		value := &pb.Order{
-			Time:  timestamppb.New(orderItem.GetTime()),
+			Time:  timestamppb.New(time.Unix(orderItem.UnixTime, 0)),
 			Items: orderItems,
 		}
 		pbOrders = append(pbOrders, value)
