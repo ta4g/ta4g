@@ -15,15 +15,17 @@ message Order {
 
 message OrderItem {
   // Which direction is the order item going: sell or buy?
-  int64 order_direction = 1;
-  // What are we trading
-  string symbol = 2;
-  // Is this an option? This is used to determine margin later
-  bool is_option = 3;
+  int64 direction = 1;
+  // What type of item is this?
+  int64 item_type = 2;
+  // What are we trading?
+  string symbol = 3;
   // Number of units
-  double unit_quantity = 4;
-  // Price per unit
-  double price_per_unit = 5;
+  double amount = 4;
+  // Quantity per amount
+  double quantity_per_amount = 5;
+  // Price per item
+  double price = 6;
 }
 
 message Orders {

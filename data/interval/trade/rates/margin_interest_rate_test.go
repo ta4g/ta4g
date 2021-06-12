@@ -1,4 +1,4 @@
-package trade
+package rates
 
 import (
 	"github.com/stretchr/testify/require"
