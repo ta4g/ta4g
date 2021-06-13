@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"github.com/stretchr/testify/require"
+	"github.com/ta4g/ta4g/data/interval/trade/constants"
 	"github.com/ta4g/ta4g/data/time/time_series"
 	"strings"
 	"testing"
@@ -16,13 +17,13 @@ func TestCSVLoader(t *testing.T) {
 
 	buyCoveredCallOrder := NewOrder(
 		now,
-		NewStockOrderItem(Buy, "ABC", 100, 10.01),
-		NewOptionOrderItem(Sell, "ABC CALL @ 10.0", 1, 1.01*100),
+		NewStockOrderItem(constants.Buy, "ABC", 100, 10.01),
+		NewOptionOrderItem(constants.Sell, "ABC CALL @ 10.0", 1, 1.01*100),
 	)
 	sellCoveredCallOrder := NewOrder(
 		now.Add(10*time_series.Day),
-		NewStockOrderItem(Sell, "ABC", 100, 10.01),
-		NewOptionOrderItem(Buy, "ABC CALL @ 10.0", 1, 1.01*100),
+		NewStockOrderItem(constants.Sell, "ABC", 100, 10.01),
+		NewOptionOrderItem(constants.Buy, "ABC CALL @ 10.0", 1, 1.01*100),
 	)
 	orders := []*Order{buyCoveredCallOrder, sellCoveredCallOrder}
 
@@ -55,13 +56,13 @@ func TestJsonNewLineLoader(t *testing.T) {
 
 	buyCoveredCallOrder := NewOrder(
 		now,
-		NewStockOrderItem(Buy, "ABC", 100, 10.01),
-		NewOptionOrderItem(Sell, "ABC CALL @ 10.0", 1, 1.01*100),
+		NewStockOrderItem(constants.Buy, "ABC", 100, 10.01),
+		NewOptionOrderItem(constants.Sell, "ABC CALL @ 10.0", 1, 1.01*100),
 	)
 	sellCoveredCallOrder := NewOrder(
 		now.Add(10*time_series.Day),
-		NewStockOrderItem(Sell, "ABC", 100, 10.01),
-		NewOptionOrderItem(Buy, "ABC CALL @ 10.0", 1, 1.01*100),
+		NewStockOrderItem(constants.Sell, "ABC", 100, 10.01),
+		NewOptionOrderItem(constants.Buy, "ABC CALL @ 10.0", 1, 1.01*100),
 	)
 	orders := []*Order{buyCoveredCallOrder, sellCoveredCallOrder}
 
@@ -97,13 +98,13 @@ func TestAvroLoader(t *testing.T) {
 
 	buyCoveredCallOrder := NewOrder(
 		now,
-		NewStockOrderItem(Buy, "ABC", 100, 10.01),
-		NewOptionOrderItem(Sell, "ABC CALL @ 10.0", 1, 1.01*100),
+		NewStockOrderItem(constants.Buy, "ABC", 100, 10.01),
+		NewOptionOrderItem(constants.Sell, "ABC CALL @ 10.0", 1, 1.01*100),
 	)
 	sellCoveredCallOrder := NewOrder(
 		now.Add(10*time_series.Day),
-		NewStockOrderItem(Sell, "ABC", 100, 10.01),
-		NewOptionOrderItem(Buy, "ABC CALL @ 10.0", 1, 1.01*100),
+		NewStockOrderItem(constants.Sell, "ABC", 100, 10.01),
+		NewOptionOrderItem(constants.Buy, "ABC CALL @ 10.0", 1, 1.01*100),
 	)
 	orders := []*Order{buyCoveredCallOrder, sellCoveredCallOrder}
 
@@ -135,13 +136,13 @@ func TestProtoLoader(t *testing.T) {
 
 	buyCoveredCallOrder := NewOrder(
 		now,
-		NewStockOrderItem(Buy, "ABC", 100, 10.01),
-		NewOptionOrderItem(Sell, "ABC CALL @ 10.0", 1, 1.01*100),
+		NewStockOrderItem(constants.Buy, "ABC", 100, 10.01),
+		NewOptionOrderItem(constants.Sell, "ABC CALL @ 10.0", 1, 1.01*100),
 	)
 	sellCoveredCallOrder := NewOrder(
 		now.Add(10*time_series.Day),
-		NewStockOrderItem(Sell, "ABC", 100, 10.01),
-		NewOptionOrderItem(Buy, "ABC CALL @ 10.0", 1, 1.01*100),
+		NewStockOrderItem(constants.Sell, "ABC", 100, 10.01),
+		NewOptionOrderItem(constants.Buy, "ABC CALL @ 10.0", 1, 1.01*100),
 	)
 	orders := []*Order{buyCoveredCallOrder, sellCoveredCallOrder}
 

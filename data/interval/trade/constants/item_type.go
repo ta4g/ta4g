@@ -1,4 +1,4 @@
-package orders
+package constants
 
 type ItemType int
 
@@ -9,3 +9,21 @@ const (
 	Option          // Option is a type of derivative that allows you to "control" more than 1x share of stock for a limited period of time
 	Crypto          // Crypto is any cryptocurrency that is available
 )
+
+const (
+	usdItemTypeStr    = "USD"
+	stockItemTypeStr  = "Stock"
+	optionItemTypeStr = "Option"
+	cryptoItemTypeStr = "Crypto"
+)
+
+var itemTypes = map[ItemType]string{
+	USD:    usdItemTypeStr,
+	Stock:  stockItemTypeStr,
+	Option: optionItemTypeStr,
+	Crypto: cryptoItemTypeStr,
+}
+
+func (i ItemType) String() string {
+	return itemTypes[i]
+}

@@ -2,6 +2,7 @@ package cost_model
 
 import (
 	"github.com/stretchr/testify/require"
+	"github.com/ta4g/ta4g/data/interval/trade/constants"
 	"github.com/ta4g/ta4g/data/interval/trade/orders"
 	"testing"
 	"time"
@@ -13,22 +14,22 @@ func TestStandardCostModel(t *testing.T) {
 
 	buyStockOrder := orders.NewOrder(
 		time.Now(),
-		orders.NewStockOrderItem(orders.Buy, "ABC", 100, 10.01),
+		orders.NewStockOrderItem(constants.Buy, "ABC", 100, 10.01),
 	)
 	buyCoveredCallOrder := orders.NewOrder(
 		time.Now(),
-		orders.NewStockOrderItem(orders.Buy, "ABC", 100, 10.01),
-		orders.NewOptionOrderItem(orders.Sell, "ABC CALL @ 10.0", 1, 1.01),
+		orders.NewStockOrderItem(constants.Buy, "ABC", 100, 10.01),
+		orders.NewOptionOrderItem(constants.Sell, "ABC CALL @ 10.0", 1, 1.01),
 	)
 
 	sellStockOrder := orders.NewOrder(
 		time.Now(),
-		orders.NewStockOrderItem(orders.Sell, "ABC", 100, 10.01),
+		orders.NewStockOrderItem(constants.Sell, "ABC", 100, 10.01),
 	)
 	sellCoveredCallOrder := orders.NewOrder(
 		time.Now(),
-		orders.NewStockOrderItem(orders.Sell, "ABC", 100, 10.01),
-		orders.NewOptionOrderItem(orders.Buy, "ABC CALL @ 10.0", 1, 1.01),
+		orders.NewStockOrderItem(constants.Sell, "ABC", 100, 10.01),
+		orders.NewOptionOrderItem(constants.Buy, "ABC CALL @ 10.0", 1, 1.01),
 	)
 
 	t.Run("BuyStockOrder", func(t *testing.T) {

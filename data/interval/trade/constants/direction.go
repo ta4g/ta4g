@@ -1,4 +1,4 @@
-package orders
+package constants
 
 // Direction indicates if we are purchasing or selling some entity
 type Direction int

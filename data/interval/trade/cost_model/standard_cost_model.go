@@ -1,6 +1,7 @@
 package cost_model
 
 import (
+	"github.com/ta4g/ta4g/data/interval/trade/constants"
 	"github.com/ta4g/ta4g/data/interval/trade/orders"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -56,13 +57,13 @@ func (s StandardCostModel) BalanceChangeOnOpen(order *orders.Order) (float64, fl
 	for _, item := range order.OrderItems {
 		var fee *Fees
 		switch item.ItemType {
-		case orders.USD:
+		case constants.USD:
 			fee = s.USD
-		case orders.Stock:
+		case constants.Stock:
 			fee = s.Stock
-		case orders.Option:
+		case constants.Option:
 			fee = s.Option
-		case orders.Crypto:
+		case constants.Crypto:
 			fee = s.Crypto
 		default:
 			return 0, 0, status.Error(codes.OutOfRange, "unknown fee type")
