@@ -89,12 +89,12 @@ commands:
     steps:
       - run:
           name: Make a cache folder
-          command: mkdir ~/cache/$(md5 << parameters.lockname >>)
+          command: mkdir ~/cache/$(md5 << parameters.lockname >> | tr -d '\n')
       - run:
           name: Tar the folder
           command: |
             tar -zcvf cache.tar.gz  << parameters.folder >>
-            mv cache.tar.gz ~/cache/$(md5 << parameters.lockname >>)
+            mv cache.tar.gz ~/cache/$(md5 << parameters.lockname >> | tr -d '\n')
       - save_cache:
           key: cache-dir-v4-{{ checksum "<< parameters.lockname >>" }}
           paths:
@@ -117,6 +117,6 @@ commands:
       - run:
           name: UnTar the folder
           command: |
-            ls ~/cache/$(md5 << parameters.lockname >>) || exit 0
-            mv ~/cache/$(md5 << parameters.lockname >>)/cache.tar.gz .
+            ls ~/cache/$(md5 << parameters.lockname >> | tr -d '\n') || exit 0
+            mv ~/cache/$(md5 << parameters.lockname >> | tr -d '\n')/cache.tar.gz .
             tar -xvzf cache.tar.gz
