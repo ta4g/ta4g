@@ -21,13 +21,12 @@ jobs:
     steps:
       - checkout
 
-#      - create_concatenated_proto_lock:
-#          lockname: proto.lock
-#
-#      - run: ls -lh proto.lock && wc -l proto.lock
-#      - uncache_directory:
-#          lockname: proto.lock
-#          folder: gen
+      - create_concatenated_proto_lock:
+          lockname: proto.lock
+      - run: ls -lh proto.lock && wc -l proto.lock
+      - uncache_directory:
+          lockname: proto.lock
+          folder: gen
 
       - run:
           name: Generate protos
@@ -35,9 +34,9 @@ jobs:
             make proto
             ls -lhR gen
 
-#      - cache_directory:
-#          lockname: proto.lock
-#          folder: gen
+      - cache_directory:
+          lockname: proto.lock
+          folder: gen
 
       - persist_to_workspace:
           root: .
@@ -54,15 +53,6 @@ jobs:
 
       - attach_workspace:
           at: .
-
-#      - create_concatenated_proto_lock:
-#          lockname: proto.lock
-#
-#      - run: ls -lh proto.lock && wc -l proto.lock
-#      - uncache_directory:
-#          lockname: proto.lock
-#          folder: gen
-
       - run: ls -lhR gen
 
       - run:
@@ -78,55 +68,55 @@ jobs:
           path: /tmp/test-reports
 
 
-#commands:
-#  create_concatenated_proto_lock:
-#    description: "Concatenate all proto files into single file. This file is used as checksum source for part of caching key."
-#    parameters:
-#      lockname:
-#        type: string
-#    steps:
-#      - run:
-#          name: Combine proto files to single file
-#          command: find proto -name '*.proto' | sort | xargs cat > << parameters.lockname >>
-#
-#  cache_directory:
-#    description: "Cache a given directory."
-#    parameters:
-#      lockname:
-#        type: string
-#      folder:
-#        type: string
-#    steps:
-#      - run:
-#          name: Make a cache folder
-#          command: mkdir ~/cache/$(md5 << parameters.lockname >>)
-#      - run:
-#          name: Tar the folder
-#          command: |
-#            tar -zcvf cache.tar.gz  << parameters.folder >>
-#            mv cache.tar.gz ~/cache/$(md5 << parameters.lockname >>)
-#      - save_cache:
-#          key: cache-dir-v3-{{ checksum "<< parameters.lockname >>" }}
-#          paths:
-#            - ~/cache
-#
-#  uncache_directory:
-#    description: "Cache a given directory."
-#    parameters:
-#      lockname:
-#        type: string
-#      folder:
-#        type: string
-#    steps:
-#      - run:
-#          name: Make a cache folder
-#          command: mkdir ~/cache
-#      - restore_cache:
-#          keys:
-#            - cache-dir-v3-{{ checksum "<< parameters.lockname >>" }}
-#      - run:
-#          name: UnTar the folder
-#          command: |
-#            ls ~/cache/$(md5 << parameters.lockname >>) || exit 0
-#            mv ~/cache/$(md5 << parameters.lockname >>)/cache.tar.gz .
-#            tar -xvzf cache.tar.gz
+commands:
+  create_concatenated_proto_lock:
+    description: "Concatenate all proto files into single file. This file is used as checksum source for part of caching key."
+    parameters:
+      lockname:
+        type: string
+    steps:
+      - run:
+          name: Combine proto files to single file
+          command: find proto -name '*.proto' | sort | xargs cat > << parameters.lockname >>
+
+  cache_directory:
+    description: "Cache a given directory."
+    parameters:
+      lockname:
+        type: string
+      folder:
+        type: string
+    steps:
+      - run:
+          name: Make a cache folder
+          command: mkdir ~/cache/$(md5sum << parameters.lockname >> | tr -d '\n')
+      - run:
+          name: Tar the folder
+          command: |
+            tar -zcvf cache.tar.gz  << parameters.folder >>
+            mv cache.tar.gz ~/cache/$(md5sum << parameters.lockname >> | tr -d '\n')
+      - save_cache:
+          key: cache-dir-v4-{{ checksum "<< parameters.lockname >>" }}
+          paths:
+            - ~/cache
+
+  uncache_directory:
+    description: "Cache a given directory."
+    parameters:
+      lockname:
+        type: string
+      folder:
+        type: string
+    steps:
+      - run:
+          name: Make a cache folder
+          command: mkdir ~/cache
+      - restore_cache:
+          keys:
+            - cache-dir-v4-{{ checksum "<< parameters.lockname >>" }}
+      - run:
+          name: UnTar the folder
+          command: |
+            ls ~/cache/$(md5sum << parameters.lockname >> | tr -d '\n') || exit 0
+            mv ~/cache/$(md5sum << parameters.lockname >> | tr -d '\n')/cache.tar.gz .
+            tar -xvzf cache.tar.gz
