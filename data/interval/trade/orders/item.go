@@ -4,7 +4,7 @@ import "github.com/ta4g/ta4g/data/interval/trade/constants"
 
 type OrderItem struct {
 	// Direction - are we buying or selling?
-	constants.Direction `csv:"constants" avro:"constants" json:"constants"`
+	constants.Direction `csv:"direction" avro:"direction" json:"direction"`
 
 	// ItemType - what type of item is this?
 	constants.ItemType `csv:"item_type" avro:"item_type" json:"item_type"`
