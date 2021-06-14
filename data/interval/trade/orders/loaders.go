@@ -10,6 +10,7 @@ import (
 	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap/ctxzap"
 	"github.com/hamba/avro"
 	"github.com/jszwec/csvutil"
+	"github.com/ta4g/ta4g/data/interval/trade/constants"
 	pb "github.com/ta4g/ta4g/gen/interval/trade"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
@@ -257,8 +258,8 @@ func (a protoLoader) Read(ctx context.Context, input io.Reader) ([]*Order, error
 			orderItems = append(
 				orderItems,
 				&OrderItem{
-					Direction:         Direction(item.Direction),
-					ItemType:          ItemType(item.ItemType),
+					Direction:         constants.Direction(item.Direction),
+					ItemType:          constants.ItemType(item.ItemType),
 					Symbol:            item.Symbol,
 					Amount:            item.Amount,
 					QuantityPerAmount: item.QuantityPerAmount,

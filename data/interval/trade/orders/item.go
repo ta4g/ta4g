@@ -1,11 +1,13 @@
 package orders
 
+import "github.com/ta4g/ta4g/data/interval/trade/constants"
+
 type OrderItem struct {
 	// Direction - are we buying or selling?
-	Direction `csv:"direction" avro:"direction" json:"direction"`
+	constants.Direction `csv:"direction" avro:"direction" json:"direction"`
 
 	// ItemType - what type of item is this?
-	ItemType `csv:"item_type" avro:"item_type" json:"item_type"`
+	constants.ItemType `csv:"item_type" avro:"item_type" json:"item_type"`
 
 	// Symbol or ID of the item we are buying or selling
 	Symbol string `csv:"symbol" avro:"symbol" json:"symbol"`
@@ -26,10 +28,10 @@ type OrderItem struct {
 	Price float64 `csv:"price" avro:"price" json:"price"`
 }
 
-func NewUSDOrderItem(direction Direction, symbol string, amount, price float64) *OrderItem {
+func NewUSDOrderItem(direction constants.Direction, symbol string, amount, price float64) *OrderItem {
 	return &OrderItem{
 		Direction:         direction,
-		ItemType:          USD,
+		ItemType:          constants.USD,
 		Symbol:            symbol,
 		Amount:            amount,
 		QuantityPerAmount: 1.0,
@@ -37,10 +39,10 @@ func NewUSDOrderItem(direction Direction, symbol string, amount, price float64) 
 	}
 }
 
-func NewStockOrderItem(direction Direction, symbol string, amount, price float64) *OrderItem {
+func NewStockOrderItem(direction constants.Direction, symbol string, amount, price float64) *OrderItem {
 	return &OrderItem{
 		Direction:         direction,
-		ItemType:          Stock,
+		ItemType:          constants.Stock,
 		Symbol:            symbol,
 		Amount:            amount,
 		QuantityPerAmount: 1.0,
@@ -48,10 +50,10 @@ func NewStockOrderItem(direction Direction, symbol string, amount, price float64
 	}
 }
 
-func NewOptionOrderItem(direction Direction, symbol string, amount, price float64) *OrderItem {
+func NewOptionOrderItem(direction constants.Direction, symbol string, amount, price float64) *OrderItem {
 	return &OrderItem{
 		Direction:         direction,
-		ItemType:          Option,
+		ItemType:          constants.Option,
 		Symbol:            symbol,
 		Amount:            amount,
 		QuantityPerAmount: 100,
@@ -59,10 +61,10 @@ func NewOptionOrderItem(direction Direction, symbol string, amount, price float6
 	}
 }
 
-func NewCryptoOrderItem(direction Direction, symbol string, amount, price float64) *OrderItem {
+func NewCryptoOrderItem(direction constants.Direction, symbol string, amount, price float64) *OrderItem {
 	return &OrderItem{
 		Direction:         direction,
-		ItemType:          Crypto,
+		ItemType:          constants.Crypto,
 		Symbol:            symbol,
 		Amount:            amount,
 		QuantityPerAmount: 1.0,
@@ -87,7 +89,7 @@ func (s *OrderItem) CalculatePrice(exchangeFee, perOrderFee, perUnitFee float64)
 
 	// When we are buying we need to pay
 	// When we are selling we are getting paid
-	if s.Direction == Buy {
+	if s.Direction == constants.Buy {
 		output *= -1.0
 	}
 
@@ -96,17 +98,17 @@ func (s *OrderItem) CalculatePrice(exchangeFee, perOrderFee, perUnitFee float64)
 
 func (s *OrderItem) MarginRequirement() float64 {
 	switch s.ItemType {
-	case USD:
+	case constants.USD:
 		return 0.0
-	case Stock:
+	case constants.Stock:
 		fallthrough
-	case Option:
+	case constants.Option:
 		fallthrough
-	case Crypto:
+	case constants.Crypto:
 		output := s.Amount * s.QuantityPerAmount * s.Price
 		// When we are buying we need to pay
 		// When we are selling we are getting paid, but that also uses up margin
-		if s.Direction == Sell {
+		if s.Direction == constants.Sell {
 			output *= -1.0
 		}
 		return output
