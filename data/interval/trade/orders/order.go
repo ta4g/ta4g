@@ -1,16 +1,19 @@
 package orders
 
 import (
+	"github.com/ta4g/ta4g/data/interval/trade/constants"
 	"time"
 )
 
 // Order represents a collection of the items that are purchased or sold in a single batch
 type Order struct {
+	constants.OrderType `csv:"order_type" avro:"order_type" json:"order_type"`
 	// UnixTime the order was placed, for back-testing we will assume all orders are filled immediately.
 	UnixTime int64 `csv:"time" avro:"time" json:"time"`
 	// OrderItems are all of the items that are purchased or sold
 	OrderItems []*OrderItem `csv:"items" avro:"items" json:"items"`
 }
+type Orders []*Order
 
 func NewOrder(t time.Time, items ...*OrderItem) *Order {
 	output := &Order{
@@ -52,3 +55,4 @@ func (s *Order) Clone() *Order {
 		s.OrderItems...,
 	)
 }
+

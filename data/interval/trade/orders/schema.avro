@@ -3,6 +3,7 @@
     "name": "order",
     "namespace": "ta4g.ta4g",
     "fields": [
+	    {"name": "order_type", "type": "long"},
 	    {"name": "time", "type": "long"},
 	    {
             "name": "items",
