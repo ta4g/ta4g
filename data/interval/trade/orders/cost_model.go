@@ -1,8 +1,4 @@
-package cost_model
-
-import (
-	"github.com/ta4g/ta4g/data/interval/trade/orders"
-)
+package orders
 
 // CostModel is the pricing engine to compute the final cost of a given order.
 //
@@ -14,12 +10,8 @@ import (
 //
 type CostModel interface {
 	// BalanceChangeOnOpen returns the trading cost of a single order, this is the cost (or profit) of an opening the position
-	BalanceChangeOnOpen(*orders.Order) (float64,float64, error)
+	BalanceChangeOnOpen(*Order) (float64,float64, error)
 	// BalanceChangeOnClose returns the trading cost of a single order, this is the cost (or profit) of a closing the position
-	BalanceChangeOnClose(*orders.Order) (float64,float64, error)
+	BalanceChangeOnClose(*Order) (float64,float64, error)
 }
 
-// Compile type type enforcement
-var _ CostModel = &NoCostModel{}
-var _ CostModel = &StandardCostModel{}
-var _ CostModel = &RampUpCostModel{}

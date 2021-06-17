@@ -2,28 +2,27 @@ package orders
 
 import (
 	"github.com/ta4g/ta4g/data/interval/trade/constants"
-	"github.com/ta4g/ta4g/data/interval/trade/cost_model"
 )
 
 type Position struct {
 	Orders
-	cost_model.CostModel
+	CostModel
 }
 
-func (p *Position) GetEntry() *Order {
-	orders := p.filterOrdersByType(constants.EnterOrderType)
-	if len(orders) == 0 {
-		return nil
-	}
-	return orders[0]
+func (p *Position) GetFundsAdded() Orders {
+	return p.filterOrdersByType(constants.AddFundsOrderType)
 }
 
-func (p *Position) GetExit() *Order {
-	orders := p.filterOrdersByType(constants.ExitOrderType)
-	if len(orders) == 0 {
-		return nil
-	}
-	return orders[0]
+func (p *Position) GetFundsRemoved() Orders {
+	return p.filterOrdersByType(constants.RemoveFundsOrderType)
+}
+
+func (p *Position) GetEntries() Orders {
+	return p.filterOrdersByType(constants.EnterOrderType)
+}
+
+func (p *Position) GetExits() Orders {
+	return p.filterOrdersByType(constants.ExitOrderType)
 }
 
 func (p *Position) GetAdjustments() Orders {

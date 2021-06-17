@@ -1,4 +1,4 @@
-package cost_model
+package no_cost_model
 
 import "github.com/ta4g/ta4g/data/interval/trade/orders"
 
@@ -7,7 +7,10 @@ import "github.com/ta4g/ta4g/data/interval/trade/orders"
 // and should only be used as a benchmark for testing
 type NoCostModel struct{}
 
-func NewNoCostModel() CostModel {
+// Compile type type enforcement
+var _ orders.CostModel = &NoCostModel{}
+
+func NewNoCostModel() orders.CostModel {
 	return &NoCostModel{}
 }
 

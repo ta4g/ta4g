@@ -1,4 +1,4 @@
-package cost_model
+package standard_cost_model
 
 import (
 	"github.com/ta4g/ta4g/data/interval/trade/constants"
@@ -24,9 +24,11 @@ type StandardCostModel struct {
 	Option *Fees `csv:"option" avro:"option" json:"option"`
 	Crypto *Fees `csv:"crypto" avro:"crypto" json:"crypto"`
 }
+// Compile type type enforcement
+var _ orders.CostModel = &StandardCostModel{}
 
 // NewStandardCostModel creates a new CostModel instance using the given fees
-func NewStandardCostModel(usd, stock, option, crypto *Fees) CostModel {
+func NewStandardCostModel(usd, stock, option, crypto *Fees) orders.CostModel {
 	return &StandardCostModel{
 		USD:    usd,
 		Stock:  stock,
@@ -37,7 +39,7 @@ func NewStandardCostModel(usd, stock, option, crypto *Fees) CostModel {
 
 // DefaultStandardCostModel is the pre-canned cost model using the fees currently posted
 // to TD Ameritrade and Coinbase.
-func DefaultStandardCostModel() CostModel {
+func DefaultStandardCostModel() orders.CostModel {
 	return NewStandardCostModel(
 		// USD, free to hold and exchange
 		&Fees{},
