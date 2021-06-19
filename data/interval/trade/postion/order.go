@@ -1,4 +1,4 @@
-package orders
+package postion
 
 import (
 	"github.com/ta4g/ta4g/data/interval/trade/constants"
@@ -8,7 +8,7 @@ import (
 // Order represents a collection of the items that are purchased or sold in a single batch
 type Order struct {
 	constants.OrderType `csv:"order_type" avro:"order_type" json:"order_type"`
-	// UnixTime the order was placed, for back-testing we will assume all orders are filled immediately.
+	// UnixTime the order was placed, for back-testing we will assume all postion are filled immediately.
 	UnixTime int64 `csv:"time" avro:"time" json:"time"`
 	// OrderItems are all of the items that are purchased or sold
 	OrderItems []*OrderItem `csv:"items" avro:"items" json:"items"`

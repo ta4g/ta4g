@@ -2,10 +2,10 @@ package portfolio
 
 import (
 	"github.com/ta4g/ta4g/data/interval/trade/cost_model"
-	"github.com/ta4g/ta4g/data/interval/trade/orders"
+	"github.com/ta4g/ta4g/data/interval/trade/postion"
 )
 
 type Portfolio struct {
-	Positions map[string]orders.Orders
+	Positions map[string]postion.Orders
 	cost_model.CostModel
 }

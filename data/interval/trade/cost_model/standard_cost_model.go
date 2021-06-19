@@ -2,7 +2,7 @@ package cost_model
 
 import (
 	"github.com/ta4g/ta4g/data/interval/trade/constants"
-	"github.com/ta4g/ta4g/data/interval/trade/orders"
+	"github.com/ta4g/ta4g/data/interval/trade/postion"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -52,7 +52,7 @@ func DefaultStandardCostModel() CostModel {
 	)
 }
 
-func (s StandardCostModel) BalanceChangeOnOpen(order *orders.Order) (float64, float64, error) {
+func (s StandardCostModel) BalanceChangeOnOpen(order *postion.Order) (float64, float64, error) {
 	orderCost := float64(0)
 	marginRequirement := float64(0)
 
@@ -77,7 +77,7 @@ func (s StandardCostModel) BalanceChangeOnOpen(order *orders.Order) (float64, fl
 	return orderCost, marginRequirement, nil
 }
 
-func (s StandardCostModel) BalanceChangeOnClose(order *orders.Order) (float64, float64, error) {
+func (s StandardCostModel) BalanceChangeOnClose(order *postion.Order) (float64, float64, error) {
 	// TODO: We don't have maintenance cost yet, but when we do this function will change
 	orderCost, marginRequirement, err := s.BalanceChangeOnOpen(order)
 	if nil != err {

@@ -1,7 +1,7 @@
 package cost_model
 
 import (
-	"github.com/ta4g/ta4g/data/interval/trade/orders"
+	"github.com/ta4g/ta4g/data/interval/trade/postion"
 )
 
 // RampUpCostModel is a cost model that is useful for back testing volatile markets
@@ -24,12 +24,12 @@ func NewRampUpCostModel(increasePct float64, standardCostModel *StandardCostMode
 	}
 }
 
-func (n *RampUpCostModel) BalanceChangeOnOpen(order *orders.Order) (float64, float64, error) {
+func (n *RampUpCostModel) BalanceChangeOnOpen(order *postion.Order) (float64, float64, error) {
 	n.increase()
 	return n.StandardCostModel.BalanceChangeOnOpen(order)
 }
 
-func (n *RampUpCostModel) BalanceChangeOnClose(order *orders.Order) (float64, float64, error) {
+func (n *RampUpCostModel) BalanceChangeOnClose(order *postion.Order) (float64, float64, error) {
 	n.decrease()
 	return n.StandardCostModel.BalanceChangeOnClose(order)
 }

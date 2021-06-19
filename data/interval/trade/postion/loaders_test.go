@@ -1,4 +1,4 @@
-package orders
+package postion
 
 import (
 	"bytes"
@@ -37,15 +37,15 @@ func TestCSVLoader(t *testing.T) {
 	// NOTE: CSV serialization of nested structures is not supported yet, so this is marked as a TODO
 	//
 	//lines := strings.Split(buff.String(), "\n")
-	//require.Len(t, lines, len(orders)+2)
-	//require.Empty(t, lines[len(orders)+1]) // Last line is blank
+	//require.Len(t, lines, len(postion)+2)
+	//require.Empty(t, lines[len(postion)+1]) // Last line is blank
 	//
 	//reader := bytes.NewReader(buff.Bytes())
 	//output, err := loader.Read(ctx, reader)
 	//require.NoError(t, err)
-	//require.Len(t, output, len(orders))
+	//require.Len(t, output, len(postion))
 	//for index, row := range output {
-	//	b := orders[index]
+	//	b := postion[index]
 	//	require.Equal(t, row.UnixTime, b.UnixTime)
 	//}
 }
