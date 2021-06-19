@@ -12,8 +12,7 @@ import "github.com/ta4g/ta4g/data/interval/trade/postion"
 //
 type CostModel interface {
 	// BalanceChangeOnOpen returns the trading cost of a single order, this is the cost (or profit) of an opening the position
-	BalanceChangeOnOpen(*postion.Order) (float64,float64, error)
+	BalanceChangeOnOpen(*postion.Order) (float64, float64, error)
 	// BalanceChangeOnClose returns the trading cost of a single order, this is the cost (or profit) of a closing the position
-	BalanceChangeOnClose(*postion.Order) (float64,float64, error)
+	BalanceChangeOnClose(*postion.Order) (float64, float64, error)
 }
-

@@ -6,8 +6,8 @@ type OrderItem struct {
 	// Direction - are we buying or selling?
 	constants.Direction `csv:"direction" avro:"direction" json:"direction"`
 
-	// ItemType - what type of item is this?
-	constants.ItemType `csv:"item_type" avro:"item_type" json:"item_type"`
+	// TransactionItemType - what type of item is this?
+	constants.TransactionItemType `csv:"item_type" avro:"item_type" json:"item_type"`
 
 	// Symbol or ID of the item we are buying or selling
 	Symbol string `csv:"symbol" avro:"symbol" json:"symbol"`
@@ -30,45 +30,45 @@ type OrderItem struct {
 
 func NewUSDOrderItem(direction constants.Direction, symbol string, amount, price float64) *OrderItem {
 	return &OrderItem{
-		Direction:         direction,
-		ItemType:          constants.USD,
-		Symbol:            symbol,
-		Amount:            amount,
-		QuantityPerAmount: 1.0,
-		Price:             price,
+		Direction:           direction,
+		TransactionItemType: constants.USD,
+		Symbol:              symbol,
+		Amount:              amount,
+		QuantityPerAmount:   1.0,
+		Price:               price,
 	}
 }
 
 func NewStockOrderItem(direction constants.Direction, symbol string, amount, price float64) *OrderItem {
 	return &OrderItem{
-		Direction:         direction,
-		ItemType:          constants.Stock,
-		Symbol:            symbol,
-		Amount:            amount,
-		QuantityPerAmount: 1.0,
-		Price:             price,
+		Direction:           direction,
+		TransactionItemType: constants.Stock,
+		Symbol:              symbol,
+		Amount:              amount,
+		QuantityPerAmount:   1.0,
+		Price:               price,
 	}
 }
 
 func NewOptionOrderItem(direction constants.Direction, symbol string, amount, price float64) *OrderItem {
 	return &OrderItem{
-		Direction:         direction,
-		ItemType:          constants.Option,
-		Symbol:            symbol,
-		Amount:            amount,
-		QuantityPerAmount: 100,
-		Price:             price,
+		Direction:           direction,
+		TransactionItemType: constants.Option,
+		Symbol:              symbol,
+		Amount:              amount,
+		QuantityPerAmount:   100,
+		Price:               price,
 	}
 }
 
 func NewCryptoOrderItem(direction constants.Direction, symbol string, amount, price float64) *OrderItem {
 	return &OrderItem{
-		Direction:         direction,
-		ItemType:          constants.Crypto,
-		Symbol:            symbol,
-		Amount:            amount,
-		QuantityPerAmount: 1.0,
-		Price:             price,
+		Direction:           direction,
+		TransactionItemType: constants.Crypto,
+		Symbol:              symbol,
+		Amount:              amount,
+		QuantityPerAmount:   1.0,
+		Price:               price,
 	}
 }
 
@@ -97,7 +97,7 @@ func (s *OrderItem) CalculatePrice(exchangeFee, perOrderFee, perUnitFee float64)
 }
 
 func (s *OrderItem) MarginRequirement() float64 {
-	switch s.ItemType {
+	switch s.TransactionItemType {
 	case constants.USD:
 		return 0.0
 	case constants.Stock:

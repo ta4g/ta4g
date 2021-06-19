@@ -58,7 +58,7 @@ func (s StandardCostModel) BalanceChangeOnOpen(order *postion.Order) (float64, f
 
 	for _, item := range order.OrderItems {
 		var fee *Fees
-		switch item.ItemType {
+		switch item.TransactionItemType {
 		case constants.USD:
 			fee = s.USD
 		case constants.Stock:
