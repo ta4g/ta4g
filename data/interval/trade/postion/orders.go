@@ -1,6 +1,9 @@
 package postion
 
-import "github.com/ta4g/ta4g/data/interval/trade/constants"
+import (
+	"github.com/ta4g/ta4g/data/interval/trade/constants/direction"
+	"github.com/ta4g/ta4g/data/interval/trade/constants/order_type"
+)
 
 type Orders []*Order
 
@@ -8,7 +11,7 @@ func (o Orders) IsClosed() bool {
 	items := map[string]float64{}
 	for _, order := range o {
 		for _, item := range order.OrderItems {
-			if item.Direction == constants.Buy {
+			if item.Direction == direction.Buy {
 				items[item.Symbol] += item.Amount
 			} else {
 				items[item.Symbol] -= item.Amount
@@ -22,26 +25,26 @@ func (o Orders) IsClosed() bool {
 }
 
 func (o Orders) GetFundsAdded() Orders {
-	return o.filterOrdersByType(constants.AddFundsOrderType)
+	return o.filterOrdersByType(order_type.PortfolioOpen)
 }
 
 func (o Orders) GetFundsRemoved() Orders {
-	return o.filterOrdersByType(constants.RemoveFundsOrderType)
+	return o.filterOrdersByType(order_type.PortfolioClose)
 }
 
 func (o Orders) GetEntries() Orders {
-	return o.filterOrdersByType(constants.EnterOrderType)
+	return o.filterOrdersByType(order_type.PositionOpen)
 }
 
 func (o Orders) GetExits() Orders {
-	return o.filterOrdersByType(constants.ExitOrderType)
+	return o.filterOrdersByType(order_type.PositionClose)
 }
 
 func (o Orders) GetAdjustments() Orders {
-	return o.filterOrdersByType(constants.AdjustmentOrderType)
+	return o.filterOrdersByType(order_type.AdjustmentOrderType)
 }
 
-func (o Orders) filterOrdersByType(orderType constants.OrderType) Orders {
+func (o Orders) filterOrdersByType(orderType order_type.OrderType) Orders {
 	output := make(Orders, 0, len(o))
 	for _, value := range o {
 		if value.OrderType == orderType {

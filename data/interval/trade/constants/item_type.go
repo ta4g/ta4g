@@ -5,7 +5,7 @@ package constants
 // This is used to create a standardized "order" and "portfolio" model around simple transaction types:
 // 1. Open Portfolio == Add `Cash` item to the portfolio
 // 2. Purchase Stock == Add `Stock` item to the portfolio + Subtract `Cache` from the portfolio
-// 3. Sell Stock = Remove `Stock` and add `Cache`
+// 3. SellDirection Stock = Remove `Stock` and add `Cache`
 //
 // This allows us to make the portfolio a running balance of all the transactions within the portfolio.
 //
@@ -55,11 +55,11 @@ const (
 	// 1. Fund Portfolio:
 	//    - Add 30k Cash
 	//    - Add 30k Margin
-	// 2. Buy 100x shares of stock at $10.00 per share, this costs `$1000.0` = `100 * $10.0`
+	// 2. BuyDirection 100x shares of stock at $10.00 per share, this costs `$1000.0` = `100 * $10.0`
 	//    - Remove 1k Cash
 	//    - Remove 0.3k Margin (rule 4, this is the max of rules 2-4)
 	//    - Add 100x shares at cost-basis of $10.00
-	// 3. Sell 100x shares of stock at $12.00 per share, this pays `$1200.0` = `100 * $12.0`
+	// 3. SellDirection 100x shares of stock at $12.00 per share, this pays `$1200.0` = `100 * $12.0`
 	//    - Remove 100x shares cost-basis of $10.00
 	//    - Add 1.2k Cash
 	//    - Add 0.5k Margin (0.3k from initial + 0.2k from profit)
@@ -104,18 +104,11 @@ type TransactionBalance struct {
 	CurrentValue      float64 // The value for all open positions.
 }
 
-const (
-	cashItemTypeStr   = "Cash"
-	stockItemTypeStr  = "Stock"
-	optionItemTypeStr = "Option"
-	cryptoItemTypeStr = "Crypto"
-)
-
 var itemTypes = map[TransactionItemType]string{
-	Cash:   cashItemTypeStr,
-	Stock:  stockItemTypeStr,
-	Option: optionItemTypeStr,
-	Crypto: cryptoItemTypeStr,
+	Cash:   "cash",
+	Stock:  "stock",
+	Option: "option",
+	Crypto: "crypto",
 }
 
 func (i TransactionItemType) String() string {

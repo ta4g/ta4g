@@ -1,4 +1,4 @@
-package constants
+package direction
 
 import (
 	"github.com/stretchr/testify/require"

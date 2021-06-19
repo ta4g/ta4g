@@ -1,10 +1,13 @@
 package postion
 
-import "github.com/ta4g/ta4g/data/interval/trade/constants"
+import (
+	"github.com/ta4g/ta4g/data/interval/trade/constants"
+	"github.com/ta4g/ta4g/data/interval/trade/constants/direction"
+)
 
 type OrderItem struct {
 	// Direction - are we buying or selling?
-	constants.Direction `csv:"direction" avro:"direction" json:"direction"`
+	direction.Direction `csv:"direction" avro:"direction" json:"direction"`
 
 	// TransactionItemType - what type of item is this?
 	constants.TransactionItemType `csv:"item_type" avro:"item_type" json:"item_type"`
@@ -28,7 +31,7 @@ type OrderItem struct {
 	Price float64 `csv:"price" avro:"price" json:"price"`
 }
 
-func NewUSDOrderItem(direction constants.Direction, symbol string, amount, price float64) *OrderItem {
+func NewUSDOrderItem(direction direction.Direction, symbol string, amount, price float64) *OrderItem {
 	return &OrderItem{
 		Direction:           direction,
 		TransactionItemType: constants.USD,
@@ -39,7 +42,7 @@ func NewUSDOrderItem(direction constants.Direction, symbol string, amount, price
 	}
 }
 
-func NewStockOrderItem(direction constants.Direction, symbol string, amount, price float64) *OrderItem {
+func NewStockOrderItem(direction direction.Direction, symbol string, amount, price float64) *OrderItem {
 	return &OrderItem{
 		Direction:           direction,
 		TransactionItemType: constants.Stock,
@@ -50,7 +53,7 @@ func NewStockOrderItem(direction constants.Direction, symbol string, amount, pri
 	}
 }
 
-func NewOptionOrderItem(direction constants.Direction, symbol string, amount, price float64) *OrderItem {
+func NewOptionOrderItem(direction direction.Direction, symbol string, amount, price float64) *OrderItem {
 	return &OrderItem{
 		Direction:           direction,
 		TransactionItemType: constants.Option,
@@ -61,7 +64,7 @@ func NewOptionOrderItem(direction constants.Direction, symbol string, amount, pr
 	}
 }
 
-func NewCryptoOrderItem(direction constants.Direction, symbol string, amount, price float64) *OrderItem {
+func NewCryptoOrderItem(direction direction.Direction, symbol string, amount, price float64) *OrderItem {
 	return &OrderItem{
 		Direction:           direction,
 		TransactionItemType: constants.Crypto,
@@ -89,7 +92,7 @@ func (s *OrderItem) CalculatePrice(exchangeFee, perOrderFee, perUnitFee float64)
 
 	// When we are buying we need to pay
 	// When we are selling we are getting paid
-	if s.Direction == constants.Buy {
+	if s.Direction == direction.Buy {
 		output *= -1.0
 	}
 
@@ -108,7 +111,7 @@ func (s *OrderItem) MarginRequirement() float64 {
 		output := s.Amount * s.QuantityPerAmount * s.Price
 		// When we are buying we need to pay
 		// When we are selling we are getting paid, but that also uses up margin
-		if s.Direction == constants.Sell {
+		if s.Direction == direction.Sell {
 			output *= -1.0
 		}
 		return output

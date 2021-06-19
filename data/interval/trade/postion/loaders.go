@@ -11,6 +11,7 @@ import (
 	"github.com/hamba/avro"
 	"github.com/jszwec/csvutil"
 	"github.com/ta4g/ta4g/data/interval/trade/constants"
+	"github.com/ta4g/ta4g/data/interval/trade/constants/direction"
 	pb "github.com/ta4g/ta4g/gen/interval/trade"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
@@ -258,7 +259,7 @@ func (a protoLoader) Read(ctx context.Context, input io.Reader) ([]*Order, error
 			orderItems = append(
 				orderItems,
 				&OrderItem{
-					Direction:           constants.Direction(item.Direction),
+					Direction:           direction.Direction(item.Direction),
 					TransactionItemType: constants.TransactionItemType(item.ItemType),
 					Symbol:              item.Symbol,
 					Amount:              item.Amount,
