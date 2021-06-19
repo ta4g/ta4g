@@ -13,7 +13,6 @@ type Order struct {
 	// OrderItems are all of the items that are purchased or sold
 	OrderItems []*OrderItem `csv:"items" avro:"items" json:"items"`
 }
-type Orders []*Order
 
 func NewOrder(t time.Time, items ...*OrderItem) *Order {
 	output := &Order{

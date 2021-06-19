@@ -1,6 +1,8 @@
-package no_cost_model
+package cost_model
 
-import "github.com/ta4g/ta4g/data/interval/trade/orders"
+import (
+	"github.com/ta4g/ta4g/data/interval/trade/orders"
+)
 
 // NoCostModel is used when there are no trading fees, no maintenance fees, and no brokerage fees
 // This is useful for a theoretical back test on the 100% most optimal performance,
@@ -8,9 +10,9 @@ import "github.com/ta4g/ta4g/data/interval/trade/orders"
 type NoCostModel struct{}
 
 // Compile type type enforcement
-var _ orders.CostModel = &NoCostModel{}
+var _ CostModel = &NoCostModel{}
 
-func NewNoCostModel() orders.CostModel {
+func NewNoCostModel() CostModel {
 	return &NoCostModel{}
 }
 

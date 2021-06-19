@@ -1,4 +1,4 @@
-package ramp_up_cost_model
+package cost_model
 
 import "testing"
 
