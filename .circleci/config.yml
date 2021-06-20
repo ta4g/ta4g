@@ -21,13 +21,15 @@ jobs:
     steps:
       - checkout
 
-#      - create_concatenated_proto_lock:
-#          lockname: proto.lock
-#
-#      - run: ls -lh proto.lock && wc -l proto.lock
-#      - uncache_directory:
-#          lockname: proto.lock
-#          folder: gen
+      - create_concatenated_proto_lock:
+          lock_file: proto.lock
+          src_folder: proto
+
+      - run: ls -lh proto.lock && wc -l proto.lock
+
+      - restore_cache:
+          keys:
+            - cache-dir-v3-{{ checksum "proto.lock" }}
 
       - run:
           name: Generate protos
@@ -35,9 +37,10 @@ jobs:
             make proto
             ls -lhR gen
 
-#      - cache_directory:
-#          lockname: proto.lock
-#          folder: gen
+      - save_cache:
+          key: cache-dir-v3-{{ checksum "proto.lock" }}
+          paths:
+            - gen
 
       - persist_to_workspace:
           root: .
@@ -78,55 +81,43 @@ jobs:
           path: /tmp/test-reports
 
 
-#commands:
-#  create_concatenated_proto_lock:
-#    description: "Concatenate all proto files into single file. This file is used as checksum source for part of caching key."
-#    parameters:
-#      lockname:
-#        type: string
-#    steps:
-#      - run:
-#          name: Combine proto files to single file
-#          command: find proto -name '*.proto' | sort | xargs cat > << parameters.lockname >>
-#
-#  cache_directory:
-#    description: "Cache a given directory."
-#    parameters:
-#      lockname:
-#        type: string
-#      folder:
-#        type: string
-#    steps:
-#      - run:
-#          name: Make a cache folder
-#          command: mkdir ~/cache/$(md5 << parameters.lockname >>)
-#      - run:
-#          name: Tar the folder
-#          command: |
-#            tar -zcvf cache.tar.gz  << parameters.folder >>
-#            mv cache.tar.gz ~/cache/$(md5 << parameters.lockname >>)
-#      - save_cache:
-#          key: cache-dir-v3-{{ checksum "<< parameters.lockname >>" }}
-#          paths:
-#            - ~/cache
-#
-#  uncache_directory:
-#    description: "Cache a given directory."
-#    parameters:
-#      lockname:
-#        type: string
-#      folder:
-#        type: string
-#    steps:
-#      - run:
-#          name: Make a cache folder
-#          command: mkdir ~/cache
-#      - restore_cache:
-#          keys:
-#            - cache-dir-v3-{{ checksum "<< parameters.lockname >>" }}
-#      - run:
-#          name: UnTar the folder
-#          command: |
-#            ls ~/cache/$(md5 << parameters.lockname >>) || exit 0
-#            mv ~/cache/$(md5 << parameters.lockname >>)/cache.tar.gz .
-#            tar -xvzf cache.tar.gz
+commands:
+
+  create_concatenated_proto_lock:
+    description: "Concatenate all proto files into single file. This file is used as checksum source for part of caching key."
+    parameters:
+      lock_file:
+        type: string
+      src_folder:
+        type: string
+
+    steps:
+      - run:
+          name: Combine proto files to single file
+          command: |
+            find << parameters.src_folder >> -type f | sort | sha256sum > << parameters.lock_file >>
+            ls -lh << parameters.lock_file >>
+            cat << parameters.lock_file >>
+
+  cache_directory:
+    description: "Cache a given directory."
+    parameters:
+      lock_file:
+        type: string
+      output_folder:
+        type: string
+    steps:
+      - save_cache:
+          key: cache-dir-v3-{{ checksum "<< parameters.lock_file >>" }}
+          paths:
+            - << parameters.output_folder >>
+
+  uncache_directory:
+    description: "Cache a given directory."
+    parameters:
+      lock_file:
+        type: string
+    steps:
+      - restore_cache:
+          keys:
+            - cache-dir-v3-{{ checksum "<< parameters.lock_file >>" }}
