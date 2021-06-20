@@ -5,6 +5,7 @@ package bar;
 option go_package = "github.com/ta4g/ta4g/gen/proto/interval/bar";
 import "google/protobuf/timestamp.proto";
 
+// StandardBar is a single bar with basic OHLC+OpenInterest
 message StandardBar {
   // Time interval of this bar
   google.protobuf.Timestamp time = 1;
@@ -29,6 +30,7 @@ message StandardBar {
   int64 open_interest = 7;
 }
 
+// StandardBars is a collection of bars
 message StandardBars {
   repeated StandardBar bars = 1;
 }
