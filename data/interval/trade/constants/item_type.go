@@ -1,6 +1,6 @@
 package constants
 
-// TransactionItemType defines each of the types of items we can add to a transaction.
+// EquityType defines each of the types of items we can add to a transaction.
 //
 // This is used to create a standardized "order" and "portfolio" model around simple transaction types:
 // 1. Open Portfolio == Add `Cash` item to the portfolio
@@ -11,10 +11,10 @@ package constants
 //
 // This makes the current balance is simply a projection of the transactions against
 // the current value of the Stock/Option/Crypto items that are currently open.
-type TransactionItemType int
+type EquityType int
 
 const (
-	_ TransactionItemType = iota
+	minEquityType EquityType = iota
 
 	// Cash for tracking the hard currency within an account,
 	// this is the outstanding balance of fiat currency you can spend.
@@ -94,6 +94,8 @@ const (
 	//   The purchase or sale of an asset will have an impact on the amount of Cash and Margin
 	//   you have in the Portfolio at any given time.
 	Crypto
+
+	maxEquityType
 )
 
 type TransactionBalance struct {
@@ -104,13 +106,13 @@ type TransactionBalance struct {
 	CurrentValue      float64 // The value for all open positions.
 }
 
-var itemTypes = map[TransactionItemType]string{
+var itemTypes = map[EquityType]string{
 	Cash:   "cash",
 	Stock:  "stock",
 	Option: "option",
 	Crypto: "crypto",
 }
 
-func (i TransactionItemType) String() string {
+func (i EquityType) String() string {
 	return itemTypes[i]
 }

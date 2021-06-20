@@ -19,18 +19,19 @@ type Fees struct {
 // StandardCostModel is used when there are the usual options/maintenance/broker fees.
 // This is useful for more real back test with more real performance
 type StandardCostModel struct {
-	USD    *Fees `csv:"usd" avro:"usd" json:"usd"`
+	Cash   *Fees `csv:"cash" avro:"cash" json:"cash"`
 	Stock  *Fees `csv:"stock" avro:"stock" json:"stock"`
 	Option *Fees `csv:"option" avro:"option" json:"option"`
 	Crypto *Fees `csv:"crypto" avro:"crypto" json:"crypto"`
 }
+
 // Compile type type enforcement
 var _ CostModel = &StandardCostModel{}
 
 // NewStandardCostModel creates a new CostModel instance using the given fees
-func NewStandardCostModel(usd, stock, option, crypto *Fees) CostModel {
+func NewStandardCostModel(cash, stock, option, crypto *Fees) CostModel {
 	return &StandardCostModel{
-		USD:    usd,
+		Cash:   cash,
 		Stock:  stock,
 		Option: option,
 		Crypto: crypto,
@@ -41,7 +42,7 @@ func NewStandardCostModel(usd, stock, option, crypto *Fees) CostModel {
 // to TD Ameritrade and Coinbase.
 func DefaultStandardCostModel() CostModel {
 	return NewStandardCostModel(
-		// USD, free to hold and exchange
+		// Cash, free to hold and exchange
 		&Fees{},
 		// Stocks are free to buy and sell, but there is an exchange fee
 		&Fees{Exchange: 0.75},
@@ -58,9 +59,9 @@ func (s StandardCostModel) BalanceChangeOnOpen(order *postion.Order) (float64, f
 
 	for _, item := range order.OrderItems {
 		var fee *Fees
-		switch item.TransactionItemType {
-		case constants.USD:
-			fee = s.USD
+		switch item.EquityType {
+		case constants.Cash:
+			fee = s.Cash
 		case constants.Stock:
 			fee = s.Stock
 		case constants.Option:

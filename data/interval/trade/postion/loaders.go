@@ -259,12 +259,12 @@ func (a protoLoader) Read(ctx context.Context, input io.Reader) ([]*Order, error
 			orderItems = append(
 				orderItems,
 				&OrderItem{
-					Direction:           direction.Direction(item.Direction),
-					TransactionItemType: constants.TransactionItemType(item.ItemType),
-					Symbol:              item.Symbol,
-					Amount:              item.Amount,
-					QuantityPerAmount:   item.QuantityPerAmount,
-					Price:               item.Price,
+					Direction:         direction.Direction(item.Direction),
+					EquityType:        constants.EquityType(item.ItemType),
+					Symbol:            item.Symbol,
+					Amount:            item.Amount,
+					QuantityPerAmount: item.QuantityPerAmount,
+					Price:             item.Price,
 				},
 			)
 		}
@@ -289,7 +289,7 @@ func (a protoLoader) Write(ctx context.Context, output io.Writer, input []*Order
 		for _, item := range items {
 			orderItems = append(orderItems, &pb.OrderItem{
 				Direction:         int64(item.Direction),
-				ItemType:          int64(item.TransactionItemType),
+				ItemType:          int64(item.EquityType),
 				Symbol:            item.Symbol,
 				Amount:            item.Amount,
 				QuantityPerAmount: item.QuantityPerAmount,

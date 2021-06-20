@@ -35,7 +35,7 @@ func (n *RampUpCostModel) BalanceChangeOnClose(order *postion.Order) (float64, f
 }
 
 func (n *RampUpCostModel) increase() {
-	for _, fee := range []*Fees{n.USD, n.Stock, n.Option, n.Crypto} {
+	for _, fee := range []*Fees{n.Cash, n.Stock, n.Option, n.Crypto} {
 		fee.Exchange += fee.Exchange * n.IncreasePct
 		fee.Order += fee.Order * n.IncreasePct
 		fee.Amount += fee.Amount * n.IncreasePct
@@ -43,7 +43,7 @@ func (n *RampUpCostModel) increase() {
 }
 
 func (n *RampUpCostModel) decrease() {
-	for _, fee := range []*Fees{n.USD, n.Stock, n.Option, n.Crypto} {
+	for _, fee := range []*Fees{n.Cash, n.Stock, n.Option, n.Crypto} {
 		fee.Exchange -= fee.Exchange * n.IncreasePct
 		fee.Order -= fee.Order * n.IncreasePct
 		fee.Amount -= fee.Amount * n.IncreasePct
