@@ -47,16 +47,6 @@ jobs:
       - attach_workspace:
           at: .
 
-#      - create_concatenated_proto_lock:
-#          lockname: proto.lock
-#
-#      - run: ls -lh proto.lock && wc -l proto.lock
-#      - uncache_directory:
-#          lockname: proto.lock
-#          folder: gen
-
-      - run: ls -lhR gen
-
       - run:
           name: Install Dependencies
           command: go mod download
