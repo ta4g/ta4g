@@ -92,7 +92,7 @@ commands:
       - run:
           name: Combine files to single file for the cache key
           command: |
-            find << parameters.src_folder >> -type f | sort | xargs -n 10000000 sha256sum > << parameters.lock_file >>
+            find << parameters.input_folder >> -type f | sort | xargs -n 10000000 sha256sum > << parameters.lock_file >>
             ls -lh << parameters.lock_file >>
             cat << parameters.lock_file >>
 
