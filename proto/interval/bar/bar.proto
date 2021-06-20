@@ -1,7 +1,5 @@
 syntax = "proto3";
-
 package bar;
-
 option go_package = "github.com/ta4g/ta4g/gen/proto/interval/bar";
 import "google/protobuf/timestamp.proto";
 
