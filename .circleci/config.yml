@@ -25,26 +25,11 @@ jobs:
           name: Clean the build files
           command: make clean
 
-      - create_concatenated_proto_lock:
+      - cached-folder:
           lock_file: proto.lock
-          src_folder: proto
-
-      - run: ls -lh proto.lock && wc -l proto.lock
-
-      - restore_cache:
-          keys:
-            - cache-dir-v3-{{ checksum "proto.lock" }}
-
-      - run:
-          name: Generate protos
-          command: |
-            ls -lh gen || make proto
-            ls -lhR gen
-
-      - save_cache:
-          key: cache-dir-v3-{{ checksum "proto.lock" }}
-          paths:
-            - gen
+          input_folder: proto
+          output_folder: gen
+          generate_command: make proto
 
       - persist_to_workspace:
           root: .
@@ -62,16 +47,6 @@ jobs:
       - attach_workspace:
           at: .
 
-#      - create_concatenated_proto_lock:
-#          lockname: proto.lock
-#
-#      - run: ls -lh proto.lock && wc -l proto.lock
-#      - uncache_directory:
-#          lockname: proto.lock
-#          folder: gen
-
-      - run: ls -lhR gen
-
       - run:
           name: Install Dependencies
           command: go mod download
@@ -87,41 +62,41 @@ jobs:
 
 commands:
 
-  create_concatenated_proto_lock:
-    description: "Concatenate all proto files into single file. This file is used as checksum source for part of caching key."
+  cached-folder:
+    description: "Conditionally cache a generated folder based on an input folder"
     parameters:
       lock_file:
+        description: "Name of the generated lock file"
         type: string
-      src_folder:
+      input_folder:
+        description: "Input folder to SHA1 for the cache key"
+        type: string
+      output_folder:
+        description: "Output folder to cache"
+        type: string
+      generate_command:
+        description: "Command to execute in order to generate the output file"
         type: string
 
     steps:
       - run:
-          name: Combine proto files to single file
+          name: Combine files to single file for the cache key
           command: |
-            find << parameters.src_folder >> -type f | sort | xargs -n 10000 sha256sum > << parameters.lock_file >>
+            find << parameters.input_folder >> -type f | sort | xargs -n 10000000 sha256sum > << parameters.lock_file >>
             ls -lh << parameters.lock_file >>
             cat << parameters.lock_file >>
 
-  cache_directory:
-    description: "Cache a given directory."
-    parameters:
-      lock_file:
-        type: string
-      output_folder:
-        type: string
-    steps:
+      - restore_cache:
+          keys:
+            - cache-dir-v3-{{ checksum "<< parameters.lock_file >>" }}
+
+      - run:
+          name: Generate protos
+          command: |
+            ls -lh << parameters.output_folder >> >/dev/null 2>&1 || << parameters.generate_command >>
+
       - save_cache:
           key: cache-dir-v3-{{ checksum "<< parameters.lock_file >>" }}
           paths:
             - << parameters.output_folder >>
 
-  uncache_directory:
-    description: "Cache a given directory."
-    parameters:
-      lock_file:
-        type: string
-    steps:
-      - restore_cache:
-          keys:
-            - cache-dir-v3-{{ checksum "<< parameters.lock_file >>" }}
