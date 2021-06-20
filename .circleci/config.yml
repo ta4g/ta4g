@@ -21,6 +21,10 @@ jobs:
     steps:
       - checkout
 
+      - run:
+          name: Clean the build files
+          command: make clean
+
       - create_concatenated_proto_lock:
           lock_file: proto.lock
           src_folder: proto
@@ -34,7 +38,7 @@ jobs:
       - run:
           name: Generate protos
           command: |
-            make proto
+            ls -lh gen || make proto
             ls -lhR gen
 
       - save_cache:
