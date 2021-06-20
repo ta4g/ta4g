@@ -100,8 +100,6 @@ commands:
           keys:
             - cache-dir-v3-{{ checksum "<< parameters.lock_file >>" }}
 
-      - when:
-          condition: << parameters.output_folder >>
       - run:
           name: Generate protos
           command: |
