@@ -99,7 +99,7 @@ commands:
       - run:
           name: Combine proto files to single file
           command: |
-            find << parameters.src_folder >> -type f | sort | sha256sum > << parameters.lock_file >>
+            find << parameters.src_folder >> -type f | sort | xargs -n 10000 sha256sum > << parameters.lock_file >>
             ls -lh << parameters.lock_file >>
             cat << parameters.lock_file >>
 
