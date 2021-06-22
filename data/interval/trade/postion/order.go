@@ -2,6 +2,7 @@ package postion
 
 import (
 	"github.com/ta4g/ta4g/data/interval/trade/constants/order_type"
+	"github.com/ta4g/ta4g/data/interval/trade/trade_record"
 	"time"
 )
 
@@ -11,13 +12,13 @@ type Order struct {
 	// UnixTime the order was placed, for back-testing we will assume all postion are filled immediately.
 	UnixTime int64 `csv:"time" avro:"time" json:"time"`
 	// OrderItems are all of the items that are purchased or sold
-	OrderItems []*OrderItem `csv:"items" avro:"items" json:"items"`
+	OrderItems []*trade_record.TradeRecord `csv:"items" avro:"items" json:"items"`
 }
 
-func NewOrder(t time.Time, items ...*OrderItem) *Order {
+func NewOrder(t time.Time, items ...*trade_record.TradeRecord) *Order {
 	output := &Order{
 		UnixTime:   t.Unix(),
-		OrderItems: make([]*OrderItem, 0, len(items)),
+		OrderItems: make([]*trade_record.TradeRecord, 0, len(items)),
 	}
 	for _, item := range items {
 		output.OrderItems = append(output.OrderItems, item.Clone())
@@ -25,12 +26,12 @@ func NewOrder(t time.Time, items ...*OrderItem) *Order {
 	return output
 }
 
-func (s *Order) Append(item *OrderItem) {
+func (s *Order) Append(item *trade_record.TradeRecord) {
 	s.OrderItems = append(s.OrderItems, item.Clone())
 }
 
-func (s *Order) AddItem(index int, item *OrderItem) {
-	items := make([]*OrderItem, 0, len(s.OrderItems)+1)
+func (s *Order) AddItem(index int, item *trade_record.TradeRecord) {
+	items := make([]*trade_record.TradeRecord, 0, len(s.OrderItems)+1)
 	items = append(items, s.OrderItems[0:index]...)
 	items = append(items, item.Clone())
 	if index < len(s.OrderItems) {
@@ -40,7 +41,7 @@ func (s *Order) AddItem(index int, item *OrderItem) {
 }
 
 func (s *Order) RemoveItem(index int) {
-	items := make([]*OrderItem, 0, len(s.OrderItems)-1)
+	items := make([]*trade_record.TradeRecord, 0, len(s.OrderItems)-1)
 	items = append(items, s.OrderItems[0:index]...)
 	if index < len(s.OrderItems) {
 		items = append(items, s.OrderItems[index+1:]...)

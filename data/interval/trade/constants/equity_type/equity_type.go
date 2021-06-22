@@ -1,20 +1,22 @@
-package constants
+package equity_type
 
 // EquityType defines each of the types of items we can add to a transaction.
 //
 // This is used to create a standardized "order" and "portfolio" model around simple transaction types:
 // 1. Open Portfolio == Add `Cash` item to the portfolio
 // 2. Purchase Stock == Add `Stock` item to the portfolio + Subtract `Cache` from the portfolio
-// 3. SellDirection Stock = Remove `Stock` and add `Cache`
+// 3. Sell Stock = Remove `Stock` and add `Cache`
+// 4. Close Portfolio == Remove all remaining Cash from portfolio
 //
-// This allows us to make the portfolio a running balance of all the transactions within the portfolio.
+// This allows us to make the portfolio a projection of events, each of adds to the portfolio over time.
 //
 // This makes the current balance is simply a projection of the transactions against
 // the current value of the Stock/Option/Crypto items that are currently open.
+//
 type EquityType int
 
 const (
-	minEquityType EquityType = iota
+	min EquityType = iota
 
 	// Cash for tracking the hard currency within an account,
 	// this is the outstanding balance of fiat currency you can spend.
@@ -95,7 +97,7 @@ const (
 	//   you have in the Portfolio at any given time.
 	Crypto
 
-	maxEquityType
+	max
 )
 
 type TransactionBalance struct {

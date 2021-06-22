@@ -1,35 +1,27 @@
 package cost_model
 
 import (
-	"github.com/ta4g/ta4g/data/interval/trade/constants"
+	"github.com/ta4g/ta4g/data/interval/trade/constants/equity_type"
 	"github.com/ta4g/ta4g/data/interval/trade/postion"
+	"github.com/ta4g/ta4g/data/interval/trade/transaction_fee"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-type Fees struct {
-	// Exchange is the fee per Order that is charged
-	Exchange float64 `csv:"exchange" avro:"exchange" json:"exchange"`
-	// Order is the fee per Order that is charged
-	Order float64 `csv:"order" avro:"order" json:"order"`
-	// Amount is the fee per Amount that is charged
-	Amount float64 `csv:"amount" avro:"amount" json:"amount"`
-}
-
-// StandardCostModel is used when there are the usual options/maintenance/broker fees.
+// StandardCostModel is used when there are the usual options/maintenance/broker transaction_fee.
 // This is useful for more real back test with more real performance
 type StandardCostModel struct {
-	Cash   *Fees `csv:"cash" avro:"cash" json:"cash"`
-	Stock  *Fees `csv:"stock" avro:"stock" json:"stock"`
-	Option *Fees `csv:"option" avro:"option" json:"option"`
-	Crypto *Fees `csv:"crypto" avro:"crypto" json:"crypto"`
+	Cash   *transaction_fee.TransactionFee `csv:"cash" avro:"cash" json:"cash"`
+	Stock  *transaction_fee.TransactionFee `csv:"stock" avro:"stock" json:"stock"`
+	Option *transaction_fee.TransactionFee `csv:"option" avro:"option" json:"option"`
+	Crypto *transaction_fee.TransactionFee `csv:"crypto" avro:"crypto" json:"crypto"`
 }
 
 // Compile type type enforcement
 var _ CostModel = &StandardCostModel{}
 
-// NewStandardCostModel creates a new CostModel instance using the given fees
-func NewStandardCostModel(cash, stock, option, crypto *Fees) CostModel {
+// NewStandardCostModel creates a new CostModel instance using the given transaction_fee
+func NewStandardCostModel(cash, stock, option, crypto *transaction_fee.TransactionFee) CostModel {
 	return &StandardCostModel{
 		Cash:   cash,
 		Stock:  stock,
@@ -38,19 +30,28 @@ func NewStandardCostModel(cash, stock, option, crypto *Fees) CostModel {
 	}
 }
 
-// DefaultStandardCostModel is the pre-canned cost model using the fees currently posted
+// DefaultStandardCostModel is the pre-canned cost model using the transaction_fee currently posted
 // to TD Ameritrade and Coinbase.
 func DefaultStandardCostModel() CostModel {
 	return NewStandardCostModel(
 		// Cash, free to hold and exchange
-		&Fees{},
+		&transaction_fee.TransactionFee{},
 		// Stocks are free to buy and sell, but there is an exchange fee
-		&Fees{Exchange: 0.75},
+		&transaction_fee.TransactionFee{Exchange: 0.75},
 		// Options hav an exchange and per-contract fee
-		&Fees{Exchange: 0.75, Amount: 0.65},
+		&transaction_fee.TransactionFee{Exchange: 0.75, Amount: 0.65},
 		// Crypto is a flat-fee (estimation for simplicity)
-		&Fees{Order: 0.99},
+		&transaction_fee.TransactionFee{Order: 0.99},
 	)
+}
+
+func (s StandardCostModel) Fees() map[equity_type.EquityType]*transaction_fee.TransactionFee {
+	return map[equity_type.EquityType]*transaction_fee.TransactionFee{
+		equity_type.Crypto: s.Crypto,
+		equity_type.Cash:   s.Cash,
+		equity_type.Option: s.Option,
+		equity_type.Stock:  s.Stock,
+	}
 }
 
 func (s StandardCostModel) BalanceChangeOnOpen(order *postion.Order) (float64, float64, error) {
@@ -58,15 +59,15 @@ func (s StandardCostModel) BalanceChangeOnOpen(order *postion.Order) (float64, f
 	marginRequirement := float64(0)
 
 	for _, item := range order.OrderItems {
-		var fee *Fees
+		var fee *transaction_fee.TransactionFee
 		switch item.EquityType {
-		case constants.Cash:
+		case equity_type.Cash:
 			fee = s.Cash
-		case constants.Stock:
+		case equity_type.Stock:
 			fee = s.Stock
-		case constants.Option:
+		case equity_type.Option:
 			fee = s.Option
-		case constants.Crypto:
+		case equity_type.Crypto:
 			fee = s.Crypto
 		default:
 			return 0, 0, status.Error(codes.OutOfRange, "unknown fee type")

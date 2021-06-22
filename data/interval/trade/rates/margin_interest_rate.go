@@ -17,13 +17,10 @@ var StandardRateRanges = []RateRange{
 }
 
 func GetMarginInterestRate(value float64) float64 {
-	if value <= 0 {
-		value = 0.0
-	}
 	for _, rateRange := range StandardRateRanges {
 		if rateRange.Min <= value && value <= rateRange.Max {
 			return rateRange.Rate
 		}
 	}
-	return 7.50
+	return StandardRateRanges[len(StandardRateRanges)-1].Rate
 }

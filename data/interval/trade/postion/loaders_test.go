@@ -4,7 +4,8 @@ import (
 	"bytes"
 	"context"
 	"github.com/stretchr/testify/require"
-	"github.com/ta4g/ta4g/data/interval/trade/constants/direction"
+	"github.com/ta4g/ta4g/data/interval/trade/constants/trade_direction"
+	"github.com/ta4g/ta4g/data/interval/trade/trade_record"
 	"github.com/ta4g/ta4g/data/time/time_series"
 	"strings"
 	"testing"
@@ -17,13 +18,13 @@ func TestCSVLoader(t *testing.T) {
 
 	buyCoveredCallOrder := NewOrder(
 		now,
-		NewStockOrderItem(direction.Buy, "ABC", 100, 10.01),
-		NewOptionOrderItem(direction.Sell, "ABC CALL @ 10.0", 1, 1.01*100),
+		trade_record.NewStockOrderItem(trade_direction.Buy, "ABC", 100, 10.01),
+		trade_record.NewOptionOrderItem(trade_direction.Sell, "ABC CALL @ 10.0", 1, 1.01*100),
 	)
 	sellCoveredCallOrder := NewOrder(
 		now.Add(10*time_series.Day),
-		NewStockOrderItem(direction.Sell, "ABC", 100, 10.01),
-		NewOptionOrderItem(direction.Buy, "ABC CALL @ 10.0", 1, 1.01*100),
+		trade_record.NewStockOrderItem(trade_direction.Sell, "ABC", 100, 10.01),
+		trade_record.NewOptionOrderItem(trade_direction.Buy, "ABC CALL @ 10.0", 1, 1.01*100),
 	)
 	orders := []*Order{buyCoveredCallOrder, sellCoveredCallOrder}
 
@@ -56,13 +57,13 @@ func TestJsonNewLineLoader(t *testing.T) {
 
 	buyCoveredCallOrder := NewOrder(
 		now,
-		NewStockOrderItem(direction.Buy, "ABC", 100, 10.01),
-		NewOptionOrderItem(direction.Sell, "ABC CALL @ 10.0", 1, 1.01*100),
+		trade_record.NewStockOrderItem(trade_direction.Buy, "ABC", 100, 10.01),
+		trade_record.NewOptionOrderItem(trade_direction.Sell, "ABC CALL @ 10.0", 1, 1.01*100),
 	)
 	sellCoveredCallOrder := NewOrder(
 		now.Add(10*time_series.Day),
-		NewStockOrderItem(direction.Sell, "ABC", 100, 10.01),
-		NewOptionOrderItem(direction.Buy, "ABC CALL @ 10.0", 1, 1.01*100),
+		trade_record.NewStockOrderItem(trade_direction.Sell, "ABC", 100, 10.01),
+		trade_record.NewOptionOrderItem(trade_direction.Buy, "ABC CALL @ 10.0", 1, 1.01*100),
 	)
 	orders := []*Order{buyCoveredCallOrder, sellCoveredCallOrder}
 
@@ -98,13 +99,13 @@ func TestAvroLoader(t *testing.T) {
 
 	buyCoveredCallOrder := NewOrder(
 		now,
-		NewStockOrderItem(direction.Buy, "ABC", 100, 10.01),
-		NewOptionOrderItem(direction.Sell, "ABC CALL @ 10.0", 1, 1.01*100),
+		trade_record.NewStockOrderItem(trade_direction.Buy, "ABC", 100, 10.01),
+		trade_record.NewOptionOrderItem(trade_direction.Sell, "ABC CALL @ 10.0", 1, 1.01*100),
 	)
 	sellCoveredCallOrder := NewOrder(
 		now.Add(10*time_series.Day),
-		NewStockOrderItem(direction.Sell, "ABC", 100, 10.01),
-		NewOptionOrderItem(direction.Buy, "ABC CALL @ 10.0", 1, 1.01*100),
+		trade_record.NewStockOrderItem(trade_direction.Sell, "ABC", 100, 10.01),
+		trade_record.NewOptionOrderItem(trade_direction.Buy, "ABC CALL @ 10.0", 1, 1.01*100),
 	)
 	orders := []*Order{buyCoveredCallOrder, sellCoveredCallOrder}
 
@@ -136,13 +137,13 @@ func TestProtoLoader(t *testing.T) {
 
 	buyCoveredCallOrder := NewOrder(
 		now,
-		NewStockOrderItem(direction.Buy, "ABC", 100, 10.01),
-		NewOptionOrderItem(direction.Sell, "ABC CALL @ 10.0", 1, 1.01*100),
+		trade_record.NewStockOrderItem(trade_direction.Buy, "ABC", 100, 10.01),
+		trade_record.NewOptionOrderItem(trade_direction.Sell, "ABC CALL @ 10.0", 1, 1.01*100),
 	)
 	sellCoveredCallOrder := NewOrder(
 		now.Add(10*time_series.Day),
-		NewStockOrderItem(direction.Sell, "ABC", 100, 10.01),
-		NewOptionOrderItem(direction.Buy, "ABC CALL @ 10.0", 1, 1.01*100),
+		trade_record.NewStockOrderItem(trade_direction.Sell, "ABC", 100, 10.01),
+		trade_record.NewOptionOrderItem(trade_direction.Buy, "ABC CALL @ 10.0", 1, 1.01*100),
 	)
 	orders := []*Order{buyCoveredCallOrder, sellCoveredCallOrder}
 

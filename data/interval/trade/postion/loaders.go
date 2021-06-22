@@ -10,8 +10,9 @@ import (
 	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap/ctxzap"
 	"github.com/hamba/avro"
 	"github.com/jszwec/csvutil"
-	"github.com/ta4g/ta4g/data/interval/trade/constants"
-	"github.com/ta4g/ta4g/data/interval/trade/constants/direction"
+	"github.com/ta4g/ta4g/data/interval/trade/constants/equity_type"
+	"github.com/ta4g/ta4g/data/interval/trade/constants/trade_direction"
+	"github.com/ta4g/ta4g/data/interval/trade/trade_record"
 	pb "github.com/ta4g/ta4g/gen/interval/trade"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
@@ -254,13 +255,13 @@ func (a protoLoader) Read(ctx context.Context, input io.Reader) ([]*Order, error
 	output := make([]*Order, 0)
 	for _, pbOrder := range messages.Orders {
 		// Convert them to OrderItems
-		orderItems := make([]*OrderItem, 0, len(pbOrder.Items))
+		orderItems := make([]*trade_record.TradeRecord, 0, len(pbOrder.Items))
 		for _, item := range pbOrder.Items {
 			orderItems = append(
 				orderItems,
-				&OrderItem{
-					Direction:         direction.Direction(item.Direction),
-					EquityType:        constants.EquityType(item.ItemType),
+				&trade_record.TradeRecord{
+					TradeDirection:    trade_direction.TradeDirection(item.Direction),
+					EquityType:        equity_type.EquityType(item.ItemType),
 					Symbol:            item.Symbol,
 					Amount:            item.Amount,
 					QuantityPerAmount: item.QuantityPerAmount,
@@ -288,7 +289,7 @@ func (a protoLoader) Write(ctx context.Context, output io.Writer, input []*Order
 		orderItems := make([]*pb.OrderItem, 0, len(items))
 		for _, item := range items {
 			orderItems = append(orderItems, &pb.OrderItem{
-				Direction:         int64(item.Direction),
+				Direction:         int64(item.TradeDirection),
 				ItemType:          int64(item.EquityType),
 				Symbol:            item.Symbol,
 				Amount:            item.Amount,

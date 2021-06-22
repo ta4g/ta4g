@@ -1,7 +1,7 @@
 package postion
 
 import (
-	"github.com/ta4g/ta4g/data/interval/trade/constants/direction"
+	"github.com/ta4g/ta4g/data/interval/trade/constants/trade_direction"
 	"github.com/ta4g/ta4g/data/interval/trade/constants/order_type"
 )
 
@@ -11,7 +11,7 @@ func (o Orders) IsClosed() bool {
 	items := map[string]float64{}
 	for _, order := range o {
 		for _, item := range order.OrderItems {
-			if item.Direction == direction.Buy {
+			if item.TradeDirection == trade_direction.Buy {
 				items[item.Symbol] += item.Amount
 			} else {
 				items[item.Symbol] -= item.Amount
@@ -41,7 +41,7 @@ func (o Orders) GetExits() Orders {
 }
 
 func (o Orders) GetAdjustments() Orders {
-	return o.filterOrdersByType(order_type.AdjustmentOrderType)
+	return o.filterOrdersByType(order_type.PositionAdjustment)
 }
 
 func (o Orders) filterOrdersByType(orderType order_type.OrderType) Orders {

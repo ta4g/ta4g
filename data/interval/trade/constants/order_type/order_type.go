@@ -7,7 +7,7 @@ package order_type
 type OrderType int
 
 const (
-	minOrderType OrderType = iota
+	min OrderType = iota
 
 	// PortfolioOpen - add funds to a Portfolio, this is a "seed" step to allocate capital
 	// to a portfolio on creation.
@@ -30,23 +30,23 @@ const (
 	// This is the opposite of a PositionOpen where if we purchased stock we then expect to sell a stock. etc.
 	PositionClose
 
-	// AdjustmentOrderType
+	// PositionAdjustment
 	// Adjust the order, this could mean:
 	// - Moving an option contract up or down
 	// - Accounting for a split where we go from 100 -> 200 shares with no change in price,
 	// - Adjusting for a dividend where we are paid (or need to pay with a short).
 	// - ...
-	AdjustmentOrderType
+	PositionAdjustment
 
-	maxOrderType
+	max
 )
 
 var orderTypes = map[OrderType]string{
-	PortfolioOpen:       "portfolio open",
-	PortfolioClose:      "portfolio close",
-	PositionOpen:        "enter",
-	PositionClose:       "exit",
-	AdjustmentOrderType: "adjustment",
+	PortfolioOpen:      "portfolio open",
+	PortfolioClose:     "portfolio close",
+	PositionOpen:       "position open",
+	PositionClose:      "position close",
+	PositionAdjustment: "position adjustment",
 }
 
 func (o OrderType) String() string {

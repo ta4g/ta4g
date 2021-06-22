@@ -1,4 +1,4 @@
-package order_type
+package trade_direction
 
 import (
 	"fmt"
