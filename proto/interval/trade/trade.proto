@@ -1,7 +1,5 @@
 syntax = "proto3";
-
 package trade;
-
 option go_package = "github.com/ta4g/ta4g/gen/proto/interval/trade";
 import "google/protobuf/timestamp.proto";
 

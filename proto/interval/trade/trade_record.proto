@@ -1,0 +1,49 @@
+syntax = "proto3";
+package trade;
+option go_package = "github.com/ta4g/ta4g/gen/proto/interval/trade";
+import "interval/trade/equity_type.proto";
+import "interval/trade/trade_direction.proto";
+
+message TradeRecord {
+  // TransactionGroup - What is the unique key for this transaction grouping?
+  // eg a CoveredCall or Option Vertical will have a key that groups the Stock + Option trade together.
+  string TransactionGroup = 1;
+
+  // TradeDirection - are we buying or selling?
+  TradeDirection TradeDirection = 2;
+
+  // EquityType - what type of item is this?
+  EquityType EquityType = 3;
+
+  // Symbol or ID of the item we are buying or selling
+  // For options and other derivatives we also have two additional fields: StrikePrice and ExpirationDate
+  string Symbol = 4;
+
+  // StrikePrice - What is the price at which this derivative can be exercised?
+  float StrikePrice = 5;
+
+  // ExpirationDate - What is the date when this derivative expires and either becomes exercised or expires worthless?
+  int64 ExpirationDate = 6;
+
+  // Amount - How many of the items are you buying or selling?
+  // Ex 100 shares of stock, or 1x option contract
+  float Amount = 7;
+
+  // QuantityPerAmount - how many items are included amount we buy or sell?
+  // Stock == 1
+  // Option == 10, 100, or some other customer number
+  // Crypto == Variable, depending on the currency
+  float QuantityPerAmount = 8;
+
+  // Price - How much is it per item?
+  // 1. A stock is $10 so it's $10 per share
+  // 2. An option is $1 per 100 shares, so it's $100 for the contract
+  float Price = 9;
+
+  // NetPrice - How much are we do we pay or are paid?
+  float NetPrice = 10;
+
+  // MarginMaintenance - How much margin is this position consuming?
+  float MarginMaintenance = 11;
+}
+

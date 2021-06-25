@@ -17,22 +17,20 @@ var orderDirections = map[TradeDirection]string{
 	Sell:    "sell",
 }
 
+var opposites = map[TradeDirection]TradeDirection{
+	Buy:  Sell,
+	Sell: Buy,
+}
+
 func (o TradeDirection) Opposite() TradeDirection {
-	switch o {
-	case Sell:
-		return Buy
-	case Buy:
-		return Sell
-	case min:
-		fallthrough
-	case max:
-		fallthrough
-	default:
+	output, ok := opposites[o]
+	if !ok {
 		return o
 	}
+	return output
 }
 
 func (o TradeDirection) String() string {
-	str, _ := orderDirections[o]
+	str := orderDirections[o]
 	return str
 }
