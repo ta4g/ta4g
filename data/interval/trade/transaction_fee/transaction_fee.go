@@ -2,10 +2,11 @@ package transaction_fee
 
 import (
 	"github.com/ta4g/ta4g/data/interval/trade/constants/equity_type"
-	"github.com/ta4g/ta4g/gen/interval/trade"
+	"github.com/ta4g/ta4g/gen/interval/transaction_fee"
 )
 
-type TransactionFee trade.TransactionFee
+type FeeAmount transaction_fee.FeeAmount
+type TransactionFee transaction_fee.TransactionFee
 
 type TransactionFeeConfig interface {
 	// FeesByEquityType - map of EquityType to TransactionFee structure

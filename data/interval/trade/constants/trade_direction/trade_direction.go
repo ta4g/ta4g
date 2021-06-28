@@ -1,27 +1,25 @@
 package trade_direction
 
-import "github.com/ta4g/ta4g/gen/interval/trade"
+import "github.com/ta4g/ta4g/gen/interval/trade_direction"
 
 // TradeDirection indicates if we are purchasing or selling some entity
-type TradeDirection trade.TradeDirection
+type TradeDirection trade_direction.TradeDirection
 
 const (
-	min     TradeDirection = TradeDirection(trade.TradeDirection_UNKNOWN_TRADE_DIRECTION)
-	Buy                    = TradeDirection(trade.TradeDirection_BUY_TRADE_DIRECTION)
-	Neutral                = TradeDirection(trade.TradeDirection_NEUTRAL_TRADE_DIRECTION)
-	Sell                   = TradeDirection(trade.TradeDirection_SELL_TRADE_DIRECTION)
-	max                    = TradeDirection(trade.TradeDirection_SELL_TRADE_DIRECTION + 1)
+	min     = TradeDirection(trade_direction.TradeDirection_UNKNOWN)
+	Buy     = TradeDirection(trade_direction.TradeDirection_BUY)
+	Neutral = TradeDirection(trade_direction.TradeDirection_NEUTRAL)
+	Sell    = TradeDirection(trade_direction.TradeDirection_SELL)
+	max     = TradeDirection(trade_direction.TradeDirection_SELL + 1)
 )
-
-var orderDirections = map[TradeDirection]string{
-	Buy:     "buy",
-	Neutral: "neutral",
-	Sell:    "sell",
-}
 
 var opposites = map[TradeDirection]TradeDirection{
 	Buy:  Sell,
 	Sell: Buy,
+}
+
+func (o TradeDirection) ToProto() trade_direction.TradeDirection {
+	return trade_direction.TradeDirection(o)
 }
 
 func (o TradeDirection) Opposite() TradeDirection {
@@ -33,6 +31,5 @@ func (o TradeDirection) Opposite() TradeDirection {
 }
 
 func (o TradeDirection) String() string {
-	str := orderDirections[o]
-	return str
+	return o.ToProto().String()
 }

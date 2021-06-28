@@ -1,17 +1,17 @@
 package order_type
 
-import "github.com/ta4g/ta4g/gen/interval/trade"
+import "github.com/ta4g/ta4g/gen/interval/order_type"
 
-type OrderType trade.OrderType
+type OrderType order_type.OrderType
 
 const (
-	min                OrderType = OrderType(trade.OrderType_UNKNOWN_ORDER_TYPE)
-	PortfolioOpen                = OrderType(trade.OrderType_PORTFOLIO_OPEN_ORDER_TYPE)
-	PortfolioClose               = OrderType(trade.OrderType_PORTFOLIO_CLOSE_ORDER_TYPE)
-	PositionOpen                 = OrderType(trade.OrderType_POSITION_OPEN_ORDER_TYPE)
-	PositionClose                = OrderType(trade.OrderType_POSITION_CLOSE_ORDER_TYPE)
-	PositionAdjustment           = OrderType(trade.OrderType_POSITION_ADJUSTMENT_ORDER_TYPE)
-	max                          = OrderType(trade.OrderType_POSITION_ADJUSTMENT_ORDER_TYPE + 1)
+	min                = OrderType(order_type.OrderType_UNKNOWN)
+	PortfolioOpen      = OrderType(order_type.OrderType_PORTFOLIO_OPEN)
+	PortfolioClose     = OrderType(order_type.OrderType_PORTFOLIO_CLOSE)
+	PositionOpen       = OrderType(order_type.OrderType_POSITION_OPEN)
+	PositionClose      = OrderType(order_type.OrderType_POSITION_CLOSE)
+	PositionAdjustment = OrderType(order_type.OrderType_POSITION_ADJUSTMENT)
+	max                = OrderType(order_type.OrderType_POSITION_ADJUSTMENT + 1)
 )
 
 var orderTypes = map[OrderType]string{
