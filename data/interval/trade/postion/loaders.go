@@ -13,7 +13,7 @@ import (
 	"github.com/ta4g/ta4g/data/interval/trade/constants/equity_type"
 	"github.com/ta4g/ta4g/data/interval/trade/constants/trade_direction"
 	"github.com/ta4g/ta4g/data/interval/trade/trade_record"
-	pb "github.com/ta4g/ta4g/gen/interval/trade"
+	pb "github.com/ta4g/ta4g/gen/proto/interval/trade"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

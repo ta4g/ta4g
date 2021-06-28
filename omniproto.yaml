@@ -2,7 +2,7 @@ rootdir: proto
 sources:
   - interval/bar/bar.proto
   - interval/
-output: gen
+output: gen/proto
 plugins:
   - name: go
     args: paths=source_relative

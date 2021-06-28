@@ -2,7 +2,7 @@ package transaction_fee
 
 import (
 	"github.com/ta4g/ta4g/data/interval/trade/constants/equity_type"
-	"github.com/ta4g/ta4g/gen/interval/transaction_fee"
+	"github.com/ta4g/ta4g/gen/proto/interval/transaction_fee"
 )
 
 type FeeAmount transaction_fee.FeeAmount

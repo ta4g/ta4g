@@ -1,6 +1,6 @@
 package order_type
 
-import "github.com/ta4g/ta4g/gen/interval/order_type"
+import "github.com/ta4g/ta4g/gen/proto/interval/order_type"
 
 type OrderType order_type.OrderType
 

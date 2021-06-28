@@ -1,6 +1,6 @@
 package trade_direction
 
-import "github.com/ta4g/ta4g/gen/interval/trade_direction"
+import "github.com/ta4g/ta4g/gen/proto/interval/trade_direction"
 
 // TradeDirection indicates if we are purchasing or selling some entity
 type TradeDirection trade_direction.TradeDirection

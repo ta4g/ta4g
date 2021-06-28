@@ -7,8 +7,8 @@ import (
 )
 
 func Test(t *testing.T) {
-	require.Empty(t, min.String(), fmt.Sprintf("%v", int(min)))
-	require.Empty(t, max.String(), fmt.Sprintf("%v", int(max)))
+	require.Equal(t, min.String(), "UNKNOWN")
+	require.Equal(t, max.String(), fmt.Sprintf("%v", int(max)))
 
 	for index := min + 1; index < max; index++ {
 		t.Run(fmt.Sprintf("%v: String", int(index)), func(t *testing.T) {

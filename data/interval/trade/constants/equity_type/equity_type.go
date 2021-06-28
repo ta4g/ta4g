@@ -1,6 +1,6 @@
 package equity_type
 
-import "github.com/ta4g/ta4g/gen/interval/equity_type"
+import "github.com/ta4g/ta4g/gen/proto/interval/equity_type"
 
 type EquityType equity_type.EquityType
 

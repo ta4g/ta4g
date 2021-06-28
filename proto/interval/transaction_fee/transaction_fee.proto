@@ -4,10 +4,10 @@ option go_package = "github.com/ta4g/ta4g/gen/proto/interval/transaction_fee";
 
 message FeeAmount {
   // Flat amount
-  float flat = 1;
+  double flat = 1;
 
   // Percentage amount
-  float pct = 2;
+  double pct = 2;
 }
 
 // TransactionFee is the amount we are charged per transaction item to complete an order

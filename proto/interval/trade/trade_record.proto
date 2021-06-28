@@ -17,28 +17,28 @@ message TradeRecord {
   string symbol = 3;
 
   // StrikePrice - What is the price at which this derivative can be exercised?
-  float strike_price = 4;
+  double strike_price = 4;
 
   // ExpirationDate - What is the date when this derivative expires and either becomes exercised or expires worthless?
   google.protobuf.Timestamp expiration_date = 5;
 
   // Amount - How many of the items are you buying or selling?
   // Ex 100 shares of stock, or 1x option contract
-  float amount = 6;
+  double amount = 6;
 
   // QuantityPerAmount - how many items are included amount we buy or sell?
   // Stock == 1
   // Option == 10, 100, or some other customer number
   // Crypto == Variable, depending on the currency
-  float quantity_per_amount = 7;
+  double quantity_per_amount = 7;
 
   // Price - How much is it per item?
   // 1. A stock is $10 so it's $10 per share
   // 2. An option is $1 per 100 shares, so it's $100 for the contract
-  float price = 8;
+  double price = 8;
 
   // NetPrice - How much are we do we pay or are paid?
-  float net_price = 9;
+  double net_price = 9;
 }
 
 message TradeGroup {
@@ -51,10 +51,10 @@ message TradeGroup {
   // NetPrice of all items within the TradeGroup, this does not include transaction fees
   // This can be positive (we are selling an item and taking in money)
   // or negative (we are buying something and removing money in exchange for an item).
-  float net_price = 3;
+  double net_price = 3;
 
   // How much borrowing power is needed by this trade group.
   // This can be negative (we need to use margin on this group),
   // or positive (this trade group frees up margin).
-  float borrowing_power = 4;
+  double borrowing_power = 4;
 }
