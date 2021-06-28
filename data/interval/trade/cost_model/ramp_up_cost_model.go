@@ -25,12 +25,12 @@ func NewRampUpCostModel(increasePct float64, standardCostModel *StandardCostMode
 	}
 }
 
-func (n *RampUpCostModel) BalanceChangeOnOpen(order *postion.Order) (float64, float64, error) {
+func (n *RampUpCostModel) BalanceChangeOnOpen(order *postion.Trade) (float64, float64, error) {
 	n.increase()
 	return n.StandardCostModel.BalanceChangeOnOpen(order)
 }
 
-func (n *RampUpCostModel) BalanceChangeOnClose(order *postion.Order) (float64, float64, error) {
+func (n *RampUpCostModel) BalanceChangeOnClose(order *postion.Trade) (float64, float64, error) {
 	n.decrease()
 	return n.StandardCostModel.BalanceChangeOnClose(order)
 }

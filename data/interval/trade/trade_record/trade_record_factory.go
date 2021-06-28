@@ -19,12 +19,17 @@ type TradeRecordFactory struct {
 type CurrencyParams struct {
 	Amount float64
 }
-type StockParams struct {
+type StockParam struct {
 	Amount, Price float64
 }
 type OptionParams struct {
+	Expiration                 int64
 	StrikePrice, Amount, Price float64
 }
+
+//
+// Funding methods
+//
 
 func (t *TradeRecordFactory) AddFunds(params CurrencyParams) error {
 	if params.Amount < 0.0 {
@@ -62,9 +67,13 @@ func (t *TradeRecordFactory) RemoveFunds(params CurrencyParams) error {
 	return nil
 }
 
-func (t *TradeRecordFactory) BuyStock(params StockParams) error {
+//
+// Stock methods
+//
+
+func (t *TradeRecordFactory) BuyStock(param StockParam) error {
 	transactionRecord, err := NewStockOrderItem(
-		t.TransactionFeeConfig, trade_direction.Buy, t.Symbol, params.Amount, params.Price,
+		t.TransactionFeeConfig, trade_direction.Buy, t.Symbol, param.Amount, param.Price,
 	)
 	if nil != err {
 		return err
@@ -79,9 +88,9 @@ func (t *TradeRecordFactory) BuyStock(params StockParams) error {
 	return nil
 }
 
-func (t *TradeRecordFactory) SellStock(params StockParams) error {
+func (t *TradeRecordFactory) SellStock(param StockParam) error {
 	transactionRecord, err := NewStockOrderItem(
-		t.TransactionFeeConfig, trade_direction.Sell, t.Symbol, params.Amount, params.Price,
+		t.TransactionFeeConfig, trade_direction.Sell, t.Symbol, param.Amount, param.Price,
 	)
 	if nil != err {
 		return err
@@ -96,9 +105,13 @@ func (t *TradeRecordFactory) SellStock(params StockParams) error {
 	return nil
 }
 
-func (t *TradeRecordFactory) BuyOption(expiration int64, params OptionParams) error {
+//
+// Option methods
+//
+
+func (t *TradeRecordFactory) BuyOption(param OptionParams) error {
 	transactionRecord, err := NewOptionOrderItem(
-		t.TransactionFeeConfig, trade_direction.Buy, t.Symbol, expiration, params.StrikePrice, params.Amount, params.Price,
+		t.TransactionFeeConfig, trade_direction.Buy, t.Symbol, param.Expiration, param.StrikePrice, param.Amount, param.Price,
 	)
 	if nil != err {
 		return err
@@ -113,9 +126,9 @@ func (t *TradeRecordFactory) BuyOption(expiration int64, params OptionParams) er
 	return nil
 }
 
-func (t *TradeRecordFactory) SellOption(expiration int64, params OptionParams) error {
+func (t *TradeRecordFactory) SellOption(param OptionParams) error {
 	transactionRecord, err := NewOptionOrderItem(
-		t.TransactionFeeConfig, trade_direction.Sell, t.Symbol, expiration, params.StrikePrice, params.Amount, params.Price,
+		t.TransactionFeeConfig, trade_direction.Sell, t.Symbol, param.Expiration, param.StrikePrice, param.Amount, param.Price,
 	)
 	if nil != err {
 		return err
@@ -130,12 +143,23 @@ func (t *TradeRecordFactory) SellOption(expiration int64, params OptionParams) e
 	return nil
 }
 
-func (t *TradeRecordFactory) BuyOptionVertical(expiration int64, strikePrice, amount, price []float64) error {
-	transactionRecord, err := NewOptionOrderItem(
-		t.TransactionFeeConfig, trade_direction.Buy, t.Symbol, expiration, strikePrice, amount, price,
-	)
-	if nil != err {
-		return err
+func (t *TradeRecordFactory) ApplyOptions(buyParams, sellParams []OptionParams) error {
+	transactionRecords := make([]*TradeRecord, 0, len(buyParams)+len(sellParams))
+
+	directionParams := map[trade_direction.TradeDirection][]OptionParams{
+		trade_direction.Buy:  buyParams,
+		trade_direction.Sell: sellParams,
+	}
+	for direction, params := range directionParams {
+		for _, param := range params {
+			transactionRecord, err := NewOptionOrderItem(
+				t.TransactionFeeConfig, direction, t.Symbol, param.Expiration, param.StrikePrice, param.Amount, param.Price,
+			)
+			if nil != err {
+				return err
+			}
+			transactionRecords = append(transactionRecords, transactionRecord)
+		}
 	}
 
 	err = t.RemoveFunds(transactionRecord.NetPrice)

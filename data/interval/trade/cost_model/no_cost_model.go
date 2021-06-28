@@ -29,7 +29,7 @@ func (n NoCostModel) Fees() map[equity_type.EquityType]*transaction_fee.Transact
 	}
 }
 
-func (n NoCostModel) BalanceChangeOnOpen(order *postion.Order) (float64, float64, error) {
+func (n NoCostModel) BalanceChangeOnOpen(order *postion.Trade) (float64, float64, error) {
 	total := 0.0
 	for _, item := range order.OrderItems {
 		total += item.CalculatePrice(0.0, 0.0, 0.0)
@@ -37,7 +37,7 @@ func (n NoCostModel) BalanceChangeOnOpen(order *postion.Order) (float64, float64
 	return total, 0.0, nil
 }
 
-func (n NoCostModel) BalanceChangeOnClose(order *postion.Order) (float64, float64, error) {
+func (n NoCostModel) BalanceChangeOnClose(order *postion.Trade) (float64, float64, error) {
 	total, _, err := n.BalanceChangeOnOpen(order)
 	if nil != err {
 		return 0, 0, err

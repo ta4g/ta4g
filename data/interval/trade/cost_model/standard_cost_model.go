@@ -54,7 +54,7 @@ func (s StandardCostModel) Fees() map[equity_type.EquityType]*transaction_fee.Tr
 	}
 }
 
-func (s StandardCostModel) BalanceChangeOnOpen(order *postion.Order) (float64, float64, error) {
+func (s StandardCostModel) BalanceChangeOnOpen(order *postion.Trade) (float64, float64, error) {
 	orderCost := float64(0)
 	marginRequirement := float64(0)
 
@@ -79,7 +79,7 @@ func (s StandardCostModel) BalanceChangeOnOpen(order *postion.Order) (float64, f
 	return orderCost, marginRequirement, nil
 }
 
-func (s StandardCostModel) BalanceChangeOnClose(order *postion.Order) (float64, float64, error) {
+func (s StandardCostModel) BalanceChangeOnClose(order *postion.Trade) (float64, float64, error) {
 	// TODO: We don't have maintenance cost yet, but when we do this function will change
 	orderCost, marginRequirement, err := s.BalanceChangeOnOpen(order)
 	if nil != err {

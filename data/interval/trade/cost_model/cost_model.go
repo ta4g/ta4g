@@ -2,8 +2,8 @@ package cost_model
 
 import (
 	"github.com/ta4g/ta4g/data/interval/trade/constants/equity_type"
-	"github.com/ta4g/ta4g/data/interval/trade/transaction_fee"
 	"github.com/ta4g/ta4g/data/interval/trade/postion"
+	"github.com/ta4g/ta4g/data/interval/trade/transaction_fee"
 )
 
 // CostModel is the pricing engine to compute the final cost of a given order.
@@ -17,9 +17,8 @@ import (
 type CostModel interface {
 	// Map of EquityType -> Fees structure
 	Fees() map[equity_type.EquityType]*transaction_fee.TransactionFee
-
 	// BalanceChangeOnOpen returns the trading cost of a single order, this is the cost (or profit) of an opening the position
-	BalanceChangeOnOpen(*postion.Order) (float64, float64, error)
+	BalanceChangeOnOpen(*postion.Trade) (float64, float64, error)
 	// BalanceChangeOnClose returns the trading cost of a single order, this is the cost (or profit) of a closing the position
-	BalanceChangeOnClose(*postion.Order) (float64, float64, error)
+	BalanceChangeOnClose(*postion.Trade) (float64, float64, error)
 }

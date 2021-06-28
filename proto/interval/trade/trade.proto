@@ -14,14 +14,19 @@ message Order {
 message OrderItem {
   // Which direction is the order item going: sell or buy?
   int64 direction = 1;
+
   // What type of item is this?
   int64 item_type = 2;
+
   // What are we trading?
   string symbol = 3;
+
   // Number of units
   double amount = 4;
+
   // Quantity per amount
   double quantity_per_amount = 5;
+
   // Price per item
   double price = 6;
 }

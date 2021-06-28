@@ -1,0 +1,17 @@
+syntax = "proto3";
+package trade_direction;
+option go_package = "github.com/ta4g/ta4g/gen/proto/interval/trade_direction";
+
+// TradeDirection indicates if we are purchasing or selling some entity
+enum TradeDirection {
+  UNKNOWN = 0;
+
+  // Buy something
+  BUY = 1;
+
+  // Neutral adjustment, eg dividends or splits
+  NEUTRAL = 2;
+
+  // Sell something
+  SELL = 3;
+}

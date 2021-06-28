@@ -1,49 +1,60 @@
 syntax = "proto3";
 package trade;
 option go_package = "github.com/ta4g/ta4g/gen/proto/interval/trade";
-import "interval/trade/equity_type.proto";
-import "interval/trade/trade_direction.proto";
+import "interval/equity_type/equity_type.proto";
+import "interval/trade_direction/trade_direction.proto";
+import "google/protobuf/timestamp.proto";
 
 message TradeRecord {
-  // TransactionGroup - What is the unique key for this transaction grouping?
-  // eg a CoveredCall or Option Vertical will have a key that groups the Stock + Option trade together.
-  string TransactionGroup = 1;
-
   // TradeDirection - are we buying or selling?
-  TradeDirection TradeDirection = 2;
+  trade_direction.TradeDirection trade_direction = 1;
 
   // EquityType - what type of item is this?
-  EquityType EquityType = 3;
+  equity_type.EquityType equity_type = 2;
 
   // Symbol or ID of the item we are buying or selling
   // For options and other derivatives we also have two additional fields: StrikePrice and ExpirationDate
-  string Symbol = 4;
+  string symbol = 3;
 
   // StrikePrice - What is the price at which this derivative can be exercised?
-  float StrikePrice = 5;
+  float strike_price = 4;
 
   // ExpirationDate - What is the date when this derivative expires and either becomes exercised or expires worthless?
-  int64 ExpirationDate = 6;
+  google.protobuf.Timestamp expiration_date = 5;
 
   // Amount - How many of the items are you buying or selling?
   // Ex 100 shares of stock, or 1x option contract
-  float Amount = 7;
+  float amount = 6;
 
   // QuantityPerAmount - how many items are included amount we buy or sell?
   // Stock == 1
   // Option == 10, 100, or some other customer number
   // Crypto == Variable, depending on the currency
-  float QuantityPerAmount = 8;
+  float quantity_per_amount = 7;
 
   // Price - How much is it per item?
   // 1. A stock is $10 so it's $10 per share
   // 2. An option is $1 per 100 shares, so it's $100 for the contract
-  float Price = 9;
+  float price = 8;
 
   // NetPrice - How much are we do we pay or are paid?
-  float NetPrice = 10;
-
-  // MarginMaintenance - How much margin is this position consuming?
-  float MarginMaintenance = 11;
+  float net_price = 9;
 }
 
+message TradeGroup {
+  // Unique key for this transaction grouping
+  string id = 1;
+
+  // Trades within this transaction group
+  repeated TradeRecord records = 2;
+
+  // NetPrice of all items within the TradeGroup, this does not include transaction fees
+  // This can be positive (we are selling an item and taking in money)
+  // or negative (we are buying something and removing money in exchange for an item).
+  float net_price = 3;
+
+  // How much borrowing power is needed by this trade group.
+  // This can be negative (we need to use margin on this group),
+  // or positive (this trade group frees up margin).
+  float borrowing_power = 4;
+}

@@ -1,9 +1,22 @@
 syntax = "proto3";
-package trade;
-option go_package = "github.com/ta4g/ta4g/gen/proto/interval/trade";
+package equity_type;
+option go_package = "github.com/ta4g/ta4g/gen/proto/interval/equity_type";
 
+// EquityType defines each of the types of items we can add to a transaction.
+//
+// This is used to create a standardized "order" and "portfolio" model around simple transaction types:
+// 1. Open Portfolio == Add `Cash` item to the portfolio
+// 2. Purchase Stock == Add `Stock` item to the portfolio + Subtract `Cache` from the portfolio
+// 3. Sell Stock = Remove `Stock` and add `Cache`
+// 4. Close Portfolio == Remove all remaining Cash from portfolio
+//
+// This allows us to make the portfolio a projection of events, each of adds to the portfolio over time.
+//
+// This makes the current balance is simply a projection of the transactions against
+// the current value of the Stock/Option/Crypto items that are currently open.
+//
 enum EquityType {
-  UNKNOWN_EQUITY_TYPE = 0;
+  UNKNOWN = 0;
 
   // Cash for tracking the hard currency within an account,
   // this is the outstanding balance of fiat currency you can spend.
@@ -55,7 +68,7 @@ enum EquityType {
   // 4. Net portfolio balance is:
   //    - 30.2k Cash
   //    - 30.2k Margin
-  CASH_EQUITY_TYPE = 1;
+  CASH = 1;
 
   // Stock is the standard share of stock you can purchase on an exchange.
   // These represent shares in a company, ETF, or other product.
@@ -63,7 +76,7 @@ enum EquityType {
   // NOTE:
   //   The purchase or sale of an asset will have an impact on the amount of Cash and Margin
   //   you have in the Portfolio at any given time.
-  STOCK_EQUITY_TYPE = 2;
+  STOCK = 2;
 
   // Option is a type of derivative that allows you to "control"
   // more than 1x share of stock for a limited period of time.
@@ -74,7 +87,7 @@ enum EquityType {
   // NOTE:
   //   The purchase or sale of an asset will have an impact on the amount of Cash and Margin
   //   you have in the Portfolio at any given time.
-  OPTION_EQUITY_TYPE = 3;
+  OPTION = 3;
 
   // Crypto is any cryptocurrency that is available.
   // This could be any type cryptocurrency, the coin "name" is the symbol here.
@@ -82,5 +95,5 @@ enum EquityType {
   // NOTE:
   //   The purchase or sale of an asset will have an impact on the amount of Cash and Margin
   //   you have in the Portfolio at any given time.
-  CRYPTO_EQUITY_TYPE = 4;
+  CRYPTO = 4;
 }

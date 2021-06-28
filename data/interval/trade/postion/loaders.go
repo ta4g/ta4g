@@ -23,14 +23,14 @@ import (
 	"time"
 )
 
-// Loader reads and writes the Order data to the desired format.
+// Loader reads and writes the Trade data to the desired format.
 // There are several loaders to choose from, each of which are self-contained with their own schemas:
 // 1. CSV
 // 2. Avro
 // 3. Proto
 type Loader interface {
-	Read(ctx context.Context, input io.Reader) ([]*Order, error)
-	Write(ctx context.Context, output io.Writer, input []*Order) error
+	Read(ctx context.Context, input io.Reader) ([]*Trade, error)
+	Write(ctx context.Context, output io.Writer, input []*Trade) error
 }
 
 // Compile time type assertions
@@ -65,7 +65,7 @@ func NewCSVLoader() Loader {
 	return &csvLoader{}
 }
 
-func (c csvLoader) Read(ctx context.Context, input io.Reader) ([]*Order, error) {
+func (c csvLoader) Read(ctx context.Context, input io.Reader) ([]*Trade, error) {
 	logger := ctxzap.Extract(ctx)
 
 	// Pull in the CSV
@@ -76,7 +76,7 @@ func (c csvLoader) Read(ctx context.Context, input io.Reader) ([]*Order, error) 
 	}
 
 	// Read the rows
-	var bars []Order
+	var bars []Trade
 	err = csvutil.Unmarshal(data, &bars)
 	if nil != err {
 		logger.Error("Failed to unmarshal rows", zap.Error(err))
@@ -84,18 +84,18 @@ func (c csvLoader) Read(ctx context.Context, input io.Reader) ([]*Order, error) 
 	}
 
 	// Type conversion
-	output := make([]*Order, 0, len(bars))
+	output := make([]*Trade, 0, len(bars))
 	for _, item := range bars {
 		output = append(output, item.Clone())
 	}
 	return output, nil
 }
 
-func (c csvLoader) Write(ctx context.Context, output io.Writer, input []*Order) error {
+func (c csvLoader) Write(ctx context.Context, output io.Writer, input []*Trade) error {
 	logger := ctxzap.Extract(ctx)
 
 	// Type conversion
-	items := make([]Order, 0, len(input))
+	items := make([]Trade, 0, len(input))
 	for _, value := range input {
 		items = append(items, *value)
 	}
@@ -123,12 +123,12 @@ func NewJsonNewLineLoader() Loader {
 	return &jsonNewLineLoader{}
 }
 
-func (j jsonNewLineLoader) Read(ctx context.Context, input io.Reader) ([]*Order, error) {
+func (j jsonNewLineLoader) Read(ctx context.Context, input io.Reader) ([]*Trade, error) {
 	logger := ctxzap.Extract(ctx)
 
 	// Pull in the CSV
 	reader := bufio.NewReader(input)
-	output := make([]*Order, 0)
+	output := make([]*Trade, 0)
 	for {
 		// Read the rows line by line
 		data, err := reader.ReadBytes('\n')
@@ -144,7 +144,7 @@ func (j jsonNewLineLoader) Read(ctx context.Context, input io.Reader) ([]*Order,
 		}
 
 		// Now parse the JSON and add it to the output
-		item := &Order{}
+		item := &Trade{}
 		err = json.Unmarshal(data, item)
 		if nil != err {
 			logger.Error("Failed to unmarshal row", zap.Error(err))
@@ -156,7 +156,7 @@ func (j jsonNewLineLoader) Read(ctx context.Context, input io.Reader) ([]*Order,
 	return output, nil
 }
 
-func (j jsonNewLineLoader) Write(ctx context.Context, writer io.Writer, input []*Order) error {
+func (j jsonNewLineLoader) Write(ctx context.Context, writer io.Writer, input []*Trade) error {
 	logger := ctxzap.Extract(ctx)
 
 	for _, item := range input {
@@ -192,14 +192,14 @@ func NewAvroLoader() Loader {
 	return &avroLoader{}
 }
 
-func (a avroLoader) Read(ctx context.Context, input io.Reader) ([]*Order, error) {
+func (a avroLoader) Read(ctx context.Context, input io.Reader) ([]*Trade, error) {
 	logger := ctxzap.Extract(ctx)
 
 	decoder := avro.NewDecoderForSchema(avroSchema, input)
 
-	output := make([]*Order, 0)
+	output := make([]*Trade, 0)
 	for {
-		stdOrder := &Order{}
+		stdOrder := &Trade{}
 		err := decoder.Decode(stdOrder)
 		if nil != err && err == io.EOF {
 			break
@@ -213,7 +213,7 @@ func (a avroLoader) Read(ctx context.Context, input io.Reader) ([]*Order, error)
 	return output, nil
 }
 
-func (a avroLoader) Write(ctx context.Context, output io.Writer, input []*Order) error {
+func (a avroLoader) Write(ctx context.Context, output io.Writer, input []*Trade) error {
 	logger := ctxzap.Extract(ctx)
 
 	encoder := avro.NewEncoderForSchema(avroSchema, output)
@@ -235,7 +235,7 @@ func NewProtoLoader() Loader {
 	return &protoLoader{}
 }
 
-func (a protoLoader) Read(ctx context.Context, input io.Reader) ([]*Order, error) {
+func (a protoLoader) Read(ctx context.Context, input io.Reader) ([]*Trade, error) {
 	logger := ctxzap.Extract(ctx)
 
 	data, err := ioutil.ReadAll(input)
@@ -252,7 +252,7 @@ func (a protoLoader) Read(ctx context.Context, input io.Reader) ([]*Order, error
 	}
 
 	// Convert the rows
-	output := make([]*Order, 0)
+	output := make([]*Trade, 0)
 	for _, pbOrder := range messages.Orders {
 		// Convert them to OrderItems
 		orderItems := make([]*trade_record.TradeRecord, 0, len(pbOrder.Items))
@@ -270,7 +270,7 @@ func (a protoLoader) Read(ctx context.Context, input io.Reader) ([]*Order, error
 			)
 		}
 		// Now make an order
-		row := NewOrder(
+		row := NewTrade(
 			pbOrder.GetTime().AsTime(),
 			orderItems...,
 		)
@@ -279,7 +279,7 @@ func (a protoLoader) Read(ctx context.Context, input io.Reader) ([]*Order, error
 	return output, nil
 }
 
-func (a protoLoader) Write(ctx context.Context, output io.Writer, input []*Order) error {
+func (a protoLoader) Write(ctx context.Context, output io.Writer, input []*Trade) error {
 	logger := ctxzap.Extract(ctx)
 
 	// Type conversion

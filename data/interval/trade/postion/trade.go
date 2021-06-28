@@ -6,8 +6,8 @@ import (
 	"time"
 )
 
-// Order represents a collection of the items that are purchased or sold in a single batch
-type Order struct {
+// Trade represents a collection of the items that are purchased or sold in a single batch
+type Trade struct {
 	order_type.OrderType `csv:"order_type" avro:"order_type" json:"order_type"`
 	// UnixTime the order was placed, for back-testing we will assume all postion are filled immediately.
 	UnixTime int64 `csv:"time" avro:"time" json:"time"`
@@ -15,8 +15,8 @@ type Order struct {
 	OrderItems []*trade_record.TradeRecord `csv:"items" avro:"items" json:"items"`
 }
 
-func NewOrder(t time.Time, items ...*trade_record.TradeRecord) *Order {
-	output := &Order{
+func NewTrade(t time.Time, items ...*trade_record.TradeRecord) *Trade {
+	output := &Trade{
 		UnixTime:   t.Unix(),
 		OrderItems: make([]*trade_record.TradeRecord, 0, len(items)),
 	}
@@ -26,11 +26,11 @@ func NewOrder(t time.Time, items ...*trade_record.TradeRecord) *Order {
 	return output
 }
 
-func (s *Order) Append(item *trade_record.TradeRecord) {
+func (s *Trade) Append(item *trade_record.TradeRecord) {
 	s.OrderItems = append(s.OrderItems, item.Clone())
 }
 
-func (s *Order) AddItem(index int, item *trade_record.TradeRecord) {
+func (s *Trade) AddItem(index int, item *trade_record.TradeRecord) {
 	items := make([]*trade_record.TradeRecord, 0, len(s.OrderItems)+1)
 	items = append(items, s.OrderItems[0:index]...)
 	items = append(items, item.Clone())
@@ -40,7 +40,7 @@ func (s *Order) AddItem(index int, item *trade_record.TradeRecord) {
 	s.OrderItems = items
 }
 
-func (s *Order) RemoveItem(index int) {
+func (s *Trade) RemoveItem(index int) {
 	items := make([]*trade_record.TradeRecord, 0, len(s.OrderItems)-1)
 	items = append(items, s.OrderItems[0:index]...)
 	if index < len(s.OrderItems) {
@@ -49,8 +49,8 @@ func (s *Order) RemoveItem(index int) {
 	s.OrderItems = items
 }
 
-func (s *Order) Clone() *Order {
-	return NewOrder(
+func (s *Trade) Clone() *Trade {
+	return NewTrade(
 		time.Unix(s.UnixTime, 0),
 		s.OrderItems...,
 	)

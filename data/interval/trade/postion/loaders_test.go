@@ -16,17 +16,17 @@ func TestCSVLoader(t *testing.T) {
 	// December 1st, 2022
 	now := time.Date(2022, 12, 1, 0, 0, 0, 0, time.UTC)
 
-	buyCoveredCallOrder := NewOrder(
+	buyCoveredCallOrder := NewTrade(
 		now,
 		trade_record.NewStockOrderItem(trade_direction.Buy, "ABC", 100, 10.01),
 		trade_record.NewOptionOrderItem(trade_direction.Sell, "ABC CALL @ 10.0", 1, 1.01*100),
 	)
-	sellCoveredCallOrder := NewOrder(
+	sellCoveredCallOrder := NewTrade(
 		now.Add(10*time_series.Day),
 		trade_record.NewStockOrderItem(trade_direction.Sell, "ABC", 100, 10.01),
 		trade_record.NewOptionOrderItem(trade_direction.Buy, "ABC CALL @ 10.0", 1, 1.01*100),
 	)
-	orders := []*Order{buyCoveredCallOrder, sellCoveredCallOrder}
+	orders := []*Trade{buyCoveredCallOrder, sellCoveredCallOrder}
 
 	ctx := context.Background()
 	loader := NewCSVLoader()
@@ -55,17 +55,17 @@ func TestJsonNewLineLoader(t *testing.T) {
 	// December 1st, 2022
 	now := time.Date(2022, 12, 1, 0, 0, 0, 0, time.UTC)
 
-	buyCoveredCallOrder := NewOrder(
+	buyCoveredCallOrder := NewTrade(
 		now,
 		trade_record.NewStockOrderItem(trade_direction.Buy, "ABC", 100, 10.01),
 		trade_record.NewOptionOrderItem(trade_direction.Sell, "ABC CALL @ 10.0", 1, 1.01*100),
 	)
-	sellCoveredCallOrder := NewOrder(
+	sellCoveredCallOrder := NewTrade(
 		now.Add(10*time_series.Day),
 		trade_record.NewStockOrderItem(trade_direction.Sell, "ABC", 100, 10.01),
 		trade_record.NewOptionOrderItem(trade_direction.Buy, "ABC CALL @ 10.0", 1, 1.01*100),
 	)
-	orders := []*Order{buyCoveredCallOrder, sellCoveredCallOrder}
+	orders := []*Trade{buyCoveredCallOrder, sellCoveredCallOrder}
 
 	ctx := context.Background()
 	loader := NewJsonNewLineLoader()
@@ -97,17 +97,17 @@ func TestAvroLoader(t *testing.T) {
 	// December 1st, 2022
 	now := time.Date(2022, 12, 1, 0, 0, 0, 0, time.UTC)
 
-	buyCoveredCallOrder := NewOrder(
+	buyCoveredCallOrder := NewTrade(
 		now,
 		trade_record.NewStockOrderItem(trade_direction.Buy, "ABC", 100, 10.01),
 		trade_record.NewOptionOrderItem(trade_direction.Sell, "ABC CALL @ 10.0", 1, 1.01*100),
 	)
-	sellCoveredCallOrder := NewOrder(
+	sellCoveredCallOrder := NewTrade(
 		now.Add(10*time_series.Day),
 		trade_record.NewStockOrderItem(trade_direction.Sell, "ABC", 100, 10.01),
 		trade_record.NewOptionOrderItem(trade_direction.Buy, "ABC CALL @ 10.0", 1, 1.01*100),
 	)
-	orders := []*Order{buyCoveredCallOrder, sellCoveredCallOrder}
+	orders := []*Trade{buyCoveredCallOrder, sellCoveredCallOrder}
 
 	ctx := context.Background()
 	loader := NewAvroLoader()
@@ -135,17 +135,17 @@ func TestProtoLoader(t *testing.T) {
 	// December 1st, 2022
 	now := time.Date(2022, 12, 1, 0, 0, 0, 0, time.UTC)
 
-	buyCoveredCallOrder := NewOrder(
+	buyCoveredCallOrder := NewTrade(
 		now,
 		trade_record.NewStockOrderItem(trade_direction.Buy, "ABC", 100, 10.01),
 		trade_record.NewOptionOrderItem(trade_direction.Sell, "ABC CALL @ 10.0", 1, 1.01*100),
 	)
-	sellCoveredCallOrder := NewOrder(
+	sellCoveredCallOrder := NewTrade(
 		now.Add(10*time_series.Day),
 		trade_record.NewStockOrderItem(trade_direction.Sell, "ABC", 100, 10.01),
 		trade_record.NewOptionOrderItem(trade_direction.Buy, "ABC CALL @ 10.0", 1, 1.01*100),
 	)
-	orders := []*Order{buyCoveredCallOrder, sellCoveredCallOrder}
+	orders := []*Trade{buyCoveredCallOrder, sellCoveredCallOrder}
 
 	ctx := context.Background()
 	loader := NewProtoLoader()

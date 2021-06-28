@@ -6,6 +6,6 @@ import (
 )
 
 type Portfolio struct {
-	Positions map[string]postion.Orders
+	Positions map[string]postion.Trades
 	cost_model.CostModel
 }

@@ -1,0 +1,29 @@
+syntax = "proto3";
+package transaction_fee;
+option go_package = "github.com/ta4g/ta4g/gen/proto/interval/transaction_fee";
+
+message FeeAmount {
+  // Flat amount
+  float flat = 1;
+
+  // Percentage amount
+  float pct = 2;
+}
+
+// TransactionFee is the amount we are charged per transaction item to complete an order
+message TransactionFee {
+  // Exchange is the fee per Order that is charged
+  FeeAmount exchange = 1;
+
+  // Order is the fee per Order that is charged
+  FeeAmount order_fee = 2;
+
+  // Amount is the fee per Amount that is charged
+  FeeAmount amount = 3;
+}
+
+// Collection of TransactionFee's
+message TransactionFees {
+  // Map of equity
+  map<int32, TransactionFee> fees = 1;
+}

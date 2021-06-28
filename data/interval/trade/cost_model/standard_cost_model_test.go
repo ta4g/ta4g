@@ -13,21 +13,21 @@ func TestStandardCostModel(t *testing.T) {
 	costModel := DefaultStandardCostModel()
 	require.NotNil(t, costModel)
 
-	buyStockOrder := postion.NewOrder(
+	buyStockOrder := postion.NewTrade(
 		time.Now(),
 		trade_record.NewStockOrderItem(trade_direction.Buy, "ABC", 100, 10.01),
 	)
-	buyCoveredCallOrder := postion.NewOrder(
+	buyCoveredCallOrder := postion.NewTrade(
 		time.Now(),
 		trade_record.NewStockOrderItem(trade_direction.Buy, "ABC", 100, 10.01),
 		trade_record.NewOptionOrderItem(trade_direction.Sell, "ABC CALL @ 10.0", 1, 1.01),
 	)
 
-	sellStockOrder := postion.NewOrder(
+	sellStockOrder := postion.NewTrade(
 		time.Now(),
 		trade_record.NewStockOrderItem(trade_direction.Sell, "ABC", 100, 10.01),
 	)
-	sellCoveredCallOrder := postion.NewOrder(
+	sellCoveredCallOrder := postion.NewTrade(
 		time.Now(),
 		trade_record.NewStockOrderItem(trade_direction.Sell, "ABC", 100, 10.01),
 		trade_record.NewOptionOrderItem(trade_direction.Buy, "ABC CALL @ 10.0", 1, 1.01),
