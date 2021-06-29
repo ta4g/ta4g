@@ -2,26 +2,37 @@ package order_type
 
 import "github.com/ta4g/ta4g/gen/proto/interval/order_type"
 
-type OrderType order_type.OrderType
+type OrderType = order_type.OrderType
 
 const (
-	min                = OrderType(order_type.OrderType_UNKNOWN)
-	PortfolioOpen      = OrderType(order_type.OrderType_PORTFOLIO_OPEN)
-	PortfolioClose     = OrderType(order_type.OrderType_PORTFOLIO_CLOSE)
-	PositionOpen       = OrderType(order_type.OrderType_POSITION_OPEN)
-	PositionClose      = OrderType(order_type.OrderType_POSITION_CLOSE)
-	PositionAdjustment = OrderType(order_type.OrderType_POSITION_ADJUSTMENT)
-	max                = OrderType(order_type.OrderType_POSITION_ADJUSTMENT + 1)
+	min                = order_type.OrderType_UNKNOWN
+	PortfolioOpen      = order_type.OrderType_PORTFOLIO_OPEN
+	PortfolioClose     = order_type.OrderType_PORTFOLIO_CLOSE
+	PositionOpen       = order_type.OrderType_POSITION_OPEN
+	PositionClose      = order_type.OrderType_POSITION_CLOSE
+	PositionAdjustment = order_type.OrderType_POSITION_ADJUSTMENT
+	max                = order_type.OrderType_POSITION_ADJUSTMENT + 1
 )
 
-var orderTypes = map[OrderType]string{
-	PortfolioOpen:      "portfolio open",
-	PortfolioClose:     "portfolio close",
-	PositionOpen:       "position open",
-	PositionClose:      "position close",
-	PositionAdjustment: "position adjustment",
+var opposites = map[OrderType]OrderType{
+	PortfolioOpen:  PortfolioClose,
+	PortfolioClose: PortfolioOpen,
+	PositionOpen:   PositionClose,
+	PositionClose:  PositionOpen,
 }
 
-func (o OrderType) String() string {
-	return orderTypes[o]
+func Opposite(o OrderType) OrderType {
+	output, ok := opposites[o]
+	if !ok {
+		return o
+	}
+	return output
+}
+
+func FromProto(e order_type.OrderType) OrderType {
+	return e
+}
+
+func ToProto(e OrderType) order_type.OrderType {
+	return e
 }

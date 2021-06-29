@@ -3,14 +3,14 @@ package trade_direction
 import "github.com/ta4g/ta4g/gen/proto/interval/trade_direction"
 
 // TradeDirection indicates if we are purchasing or selling some entity
-type TradeDirection trade_direction.TradeDirection
+type TradeDirection = trade_direction.TradeDirection
 
 const (
-	min     = TradeDirection(trade_direction.TradeDirection_UNKNOWN)
-	Buy     = TradeDirection(trade_direction.TradeDirection_BUY)
-	Neutral = TradeDirection(trade_direction.TradeDirection_NEUTRAL)
-	Sell    = TradeDirection(trade_direction.TradeDirection_SELL)
-	max     = TradeDirection(trade_direction.TradeDirection_SELL + 1)
+	min     = trade_direction.TradeDirection_UNKNOWN
+	Buy     = trade_direction.TradeDirection_BUY
+	Neutral = trade_direction.TradeDirection_NEUTRAL
+	Sell    = trade_direction.TradeDirection_SELL
+	max     = trade_direction.TradeDirection_SELL + 1
 )
 
 var opposites = map[TradeDirection]TradeDirection{
@@ -18,11 +18,7 @@ var opposites = map[TradeDirection]TradeDirection{
 	Sell: Buy,
 }
 
-func (o TradeDirection) ToProto() trade_direction.TradeDirection {
-	return trade_direction.TradeDirection(o)
-}
-
-func (o TradeDirection) Opposite() TradeDirection {
+func Opposite(o TradeDirection) TradeDirection {
 	output, ok := opposites[o]
 	if !ok {
 		return o
@@ -30,6 +26,10 @@ func (o TradeDirection) Opposite() TradeDirection {
 	return output
 }
 
-func (o TradeDirection) String() string {
-	return o.ToProto().String()
+func FromProto(o trade_direction.TradeDirection) TradeDirection {
+	return o
+}
+
+func ToProto(o TradeDirection) trade_direction.TradeDirection {
+	return o
 }

@@ -14,5 +14,11 @@ func Test(t *testing.T) {
 		t.Run(fmt.Sprintf("%v: String", int(index)), func(t *testing.T) {
 			require.NotEmpty(t, index.String())
 		})
+
+		t.Run(fmt.Sprintf("%v: To/FromProto", int(index)), func(t *testing.T) {
+			protoValue := ToProto(index)
+			equityTypeValue := FromProto(protoValue)
+			require.Equal(t, equityTypeValue, index)
+		})
 	}
 }

@@ -1,6 +1,6 @@
 syntax = "proto3";
-package trade;
-option go_package = "github.com/ta4g/ta4g/gen/proto/interval/trade";
+package trade_record;
+option go_package = "github.com/ta4g/ta4g/gen/proto/interval/trade_record";
 import "interval/equity_type/equity_type.proto";
 import "interval/trade_direction/trade_direction.proto";
 import "google/protobuf/timestamp.proto";
