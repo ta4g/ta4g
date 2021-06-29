@@ -7,8 +7,8 @@ import (
 )
 
 func Test(t *testing.T) {
-	require.Empty(t, min.String(), fmt.Sprintf("%v", int(min)))
-	require.Empty(t, max.String(), fmt.Sprintf("%v", int(max)))
+	require.Equal(t, min.String(), "UNKNOWN", fmt.Sprintf("%v", int(min)))
+	require.Equal(t, max.String(), "6", fmt.Sprintf("%v", int(max)))
 
 	for index := min + 1; index < max; index++ {
 		t.Run(fmt.Sprintf("%v: String", int(index)), func(t *testing.T) {
@@ -27,8 +27,8 @@ func Test(t *testing.T) {
 		require.Equal(t, Opposite(PortfolioOpen), PortfolioClose)          // Switch
 		require.Equal(t, Opposite(PortfolioClose), PortfolioOpen)          // Switch
 		require.Equal(t, Opposite(PositionAdjustment), PositionAdjustment) // Same
-		require.Equal(t, Opposite(PositionOpen), PositionOpen)             // Switch
-		require.Equal(t, Opposite(PositionOpen), PositionOpen)             // Switch
+		require.Equal(t, Opposite(PositionOpen), PositionClose)             // Switch
+		require.Equal(t, Opposite(PositionClose), PositionOpen)             // Switch
 		require.Equal(t, Opposite(max), max)                               // Same
 	})
 }

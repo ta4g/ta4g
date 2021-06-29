@@ -19,12 +19,18 @@ type TradeRecordFactory struct {
 type CurrencyParams struct {
 	Amount float64
 }
+
 type StockParam struct {
 	Amount, Price float64
 }
+
 type OptionParams struct {
 	Expiration                 int64
 	StrikePrice, Amount, Price float64
+}
+
+type CrptoParam struct {
+	Amount, Price float64
 }
 
 //
@@ -125,9 +131,7 @@ func (t *TradeRecordFactory) BuyOption(param OptionParams) error {
 }
 
 func (t *TradeRecordFactory) SellOption(param OptionParams) error {
-	transactionRecord, err := NewOptionOrderItem(
-		trade_direction.Sell, t.Symbol, param.Expiration, param.StrikePrice, param.Amount, param.Price,
-	)
+	transactionRecord, err := NewOptionOrderItem(trade_direction.Sell, t.Symbol, param.Expiration, param.StrikePrice, param.Amount, param.Price)
 	if nil != err {
 		return err
 	}
@@ -141,26 +145,13 @@ func (t *TradeRecordFactory) SellOption(param OptionParams) error {
 	return nil
 }
 
-func (t *TradeRecordFactory) ApplyOptions(buyParams, sellParams []OptionParams) error {
-	transactionRecords := make([]*TradeRecord, 0, len(buyParams)+len(sellParams))
-
-	directionParams := map[trade_direction.TradeDirection][]OptionParams{
-		trade_direction.Buy:  buyParams,
-		trade_direction.Sell: sellParams,
-	}
-	for direction, params := range directionParams {
-		for _, param := range params {
-			transactionRecord, err := NewOptionOrderItem(
-				direction, t.Symbol, param.Expiration, param.StrikePrice, param.Amount, param.Price,
-			)
-			if nil != err {
-				return err
-			}
-			transactionRecords = append(transactionRecords, transactionRecord)
-		}
+func (t *TradeRecordFactory) BuyCrypto(params CrptoParam) error {
+	transactionRecord, err := NewCryptoOrderItem(trade_direction.Buy, t.Symbol, params.Amount, params.Price)
+	if nil != err {
+		return err
 	}
 
-	err := t.AddFunds(CurrencyParams{Amount: transactionRecord.NetPrice})
+	err = t.RemoveFunds(CurrencyParams{Amount: transactionRecord.NetPrice})
 	if nil != err {
 		return err
 	}
@@ -169,44 +160,8 @@ func (t *TradeRecordFactory) ApplyOptions(buyParams, sellParams []OptionParams) 
 	return nil
 }
 
-func (t *TradeRecordFactory) SellOptions(expiration int64, strikePrices, amounts, prices []float64) error {
-	transactionRecord, err := NewOptionOrderItem(
-		trade_direction.Sell, t.Symbol, expiration, strikePrice, amount, price,
-	)
-	if nil != err {
-		return err
-	}
-
-	err = t.AddFunds(transactionRecord.NetPrice)
-	if nil != err {
-		return err
-	}
-
-	t.TradeRecords = append(t.TradeRecords, transactionRecord)
-	return nil
-}
-
-func (t *TradeRecordFactory) BuyCrypto(symbol string, amount, price float64) error {
-	transactionRecord, err := NewCryptoOrderItem(
-		trade_direction.Buy, t.Symbol, amount, price,
-	)
-	if nil != err {
-		return err
-	}
-
-	err = t.AddFunds(CurrencyParams{Amount: transactionRecord.NetPrice})
-	if nil != err {
-		return err
-	}
-
-	t.TradeRecords = append(t.TradeRecords, transactionRecord)
-	return nil
-}
-
-func (t *TradeRecordFactory) SellCrypto(symbol string, amount, price float64) error {
-	transactionRecord, err := NewCryptoOrderItem(
-		trade_direction.Sell, t.Symbol, amount, price,
-	)
+func (t *TradeRecordFactory) SellCrypto(params CrptoParam) error {
+	transactionRecord, err := NewCryptoOrderItem(trade_direction.Sell, t.Symbol, params.Amount, params.Price)
 	if nil != err {
 		return err
 	}

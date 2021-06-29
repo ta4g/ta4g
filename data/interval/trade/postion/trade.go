@@ -20,20 +20,18 @@ func NewTrade(t time.Time, items ...*trade_record.TradeRecord) *Trade {
 		UnixTime:   t.Unix(),
 		OrderItems: make([]*trade_record.TradeRecord, 0, len(items)),
 	}
-	for _, item := range items {
-		output.OrderItems = append(output.OrderItems, item.Clone())
-	}
+	output.OrderItems = append(output.OrderItems, items...)
 	return output
 }
 
 func (s *Trade) Append(item *trade_record.TradeRecord) {
-	s.OrderItems = append(s.OrderItems, item.Clone())
+	s.OrderItems = append(s.OrderItems, item)
 }
 
 func (s *Trade) AddItem(index int, item *trade_record.TradeRecord) {
 	items := make([]*trade_record.TradeRecord, 0, len(s.OrderItems)+1)
 	items = append(items, s.OrderItems[0:index]...)
-	items = append(items, item.Clone())
+	items = append(items, item)
 	if index < len(s.OrderItems) {
 		items = append(items, s.OrderItems[index:]...)
 	}
