@@ -10,7 +10,7 @@ import (
 	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap/ctxzap"
 	"github.com/hamba/avro"
 	"github.com/jszwec/csvutil"
-	pb "github.com/ta4g/ta4g/gen/interval/bar"
+	pb "github.com/ta4g/ta4g/gen/proto/interval/bar"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

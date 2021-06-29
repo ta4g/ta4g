@@ -11,7 +11,7 @@ func TestGetMarginInterestRate(t *testing.T) {
 		value float64
 		want  float64
 	}{
-		{"Negative price", -1.0, 9.50},
+		{"Negative price", -1.0, 7.50},
 		{"Low price", 1.0, 9.50},
 		{"Medium price", 50001.0, 8.00},
 		{"High price", 1250000.0, 7.50},

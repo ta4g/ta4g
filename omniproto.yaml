@@ -1,8 +1,8 @@
 rootdir: proto
 sources:
   - interval/bar/bar.proto
-  - interval/trade/trade.proto
-output: gen
+  - interval/
+output: gen/proto
 plugins:
   - name: go
     args: paths=source_relative

@@ -5,3 +5,4 @@ clean:
 
 proto:
 	docker run -v $(shell pwd):/workspace --rm grpckit/omniproto
+	echo "Protos generated"
