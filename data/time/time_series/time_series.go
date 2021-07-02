@@ -44,7 +44,7 @@ type TimeSeries interface {
 	// Three examples:
 	// 1. Range(1, 2) returns the next 2x time.Time's in the series w/o moving CurrentTime
 	// 2. Range(-2, -1) returns the previous 2x time.Time's in the series w/o moving CurrentTime
-	// 3. Range(-1, 1) returns the previous, currentm, and next time.Time's in the series
+	// 3. Range(-1, 1) returns the previous, current, and next time.Time's in the series
 	//
 	Range(start, end int) ([]time.Time, error)
 

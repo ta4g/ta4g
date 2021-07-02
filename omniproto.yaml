@@ -6,6 +6,8 @@ output: gen/proto
 plugins:
   - name: go
     args: paths=source_relative
+  - name: go-grpc
+    args: paths=source_relative
 debug: true
 descriptors:
   output: gen/descriptors.pb

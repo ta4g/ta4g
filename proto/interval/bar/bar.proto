@@ -4,10 +4,16 @@ package bar;
 
 option go_package = "github.com/ta4g/ta4g/gen/proto/interval/bar";
 import "google/protobuf/timestamp.proto";
+import "interval/equity_type/equity_type.proto";
+import "interval/time_series/time_series.proto";
 
-message StandardBar {
-  // Time interval of this bar
-  google.protobuf.Timestamp time = 1;
+service OHLCBarService {
+  rpc GetBars(GetBarsRequest) returns (GetBarsResponse);
+}
+
+message OHLCBar {
+  // Time of the bar
+  google.protobuf.Timestamp timestamp = 1;
 
   // Open price for the current bar
   double open = 2;
@@ -29,6 +35,30 @@ message StandardBar {
   int64 open_interest = 7;
 }
 
-message StandardBars {
-  repeated StandardBar bars = 1;
+message OHLCBars {
+  repeated OHLCBar bars = 1;
+}
+
+message GetBarsRequest {
+  // EquityType - what type of item is this?
+  equity_type.EquityType equity_type = 1;
+  // What is the symbol of the entity you want a time series on?
+  string symbol = 2;
+  // Starting point in the timeseries
+  time_series.TimeSeries start_time = 3;
+  // Ending point in the timeseries
+  time_series.TimeSeries end_time = 4;
+}
+
+message GetBarsResponse {
+  // EquityType - what type of item is this?
+  equity_type.EquityType equity_type = 1;
+  // What is the symbol of the entity you want a time series on?
+  string symbol = 2;
+  // Starting time to retrieve (inclusive)
+  time_series.TimeSeries start_time = 3;
+  // Ending time to retrieve (inclusive)
+  time_series.TimeSeries end_time = 4;
+  // OHLC bars retrieved
+  repeated OHLCBar bars = 5;
 }

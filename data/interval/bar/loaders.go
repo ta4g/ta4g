@@ -253,7 +253,7 @@ func (a protoLoader) Read(ctx context.Context, input io.Reader) ([]Bar, error) {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	messages := &pb.StandardBars{}
+	messages := &pb.OHLCBars{}
 	err = proto.Unmarshal(data, messages)
 	if nil != err {
 		logger.Error("Failed to unmarshal rows", zap.Error(err))
@@ -264,7 +264,7 @@ func (a protoLoader) Read(ctx context.Context, input io.Reader) ([]Bar, error) {
 	output := make([]Bar, 0)
 	for _, bar := range messages.Bars {
 		row := New(
-			bar.GetTime().AsTime(),
+			bar.GetTimestamp().AsTime(),
 			bar.GetOpen(),
 			bar.GetHigh(),
 			bar.GetLow(),
@@ -281,10 +281,10 @@ func (a protoLoader) Write(ctx context.Context, output io.Writer, input []Bar) e
 	logger := ctxzap.Extract(ctx)
 
 	// Type conversion
-	bars := make([]*pb.StandardBar, 0, len(input))
+	bars := make([]*pb.OHLCBar, 0, len(input))
 	for _, b := range input {
-		value := &pb.StandardBar{
-			Time:         timestamppb.New(b.GetTime()),
+		value := &pb.OHLCBar{
+			Timestamp:    timestamppb.New(b.GetTime()),
 			Open:         b.GetOpen(),
 			High:         b.GetHigh(),
 			Low:          b.GetLow(),
@@ -295,7 +295,7 @@ func (a protoLoader) Write(ctx context.Context, output io.Writer, input []Bar) e
 		bars = append(bars, value)
 	}
 
-	data, err := proto.Marshal(&pb.StandardBars{Bars: bars})
+	data, err := proto.Marshal(&pb.OHLCBars{Bars: bars})
 	if nil != err {
 		logger.Error("Failed to marshal rows", zap.Error(err))
 		return status.Error(codes.Internal, err.Error())

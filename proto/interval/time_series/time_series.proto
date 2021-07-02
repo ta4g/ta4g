@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package time_series;
+
+option go_package = "github.com/ta4g/ta4g/gen/proto/interval/time_series";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+import "interval/equity_type/equity_type.proto";
+
+// GRPC service for retrieving a TimeSeries
+service TimeSeriesService {
+  rpc GetTimeSeries(GetTimeSeriesRequest) returns(GetTimeSeriesResponse);
+}
+
+message TimeSeries {
+  // IntervalSize is the size of each interval, typically Days
+  google.protobuf.Duration interval_size = 1;
+
+  // Timestamps in the TimeSeries
+  google.protobuf.Timestamp timestamps = 2;
+}
+
+message GetTimeSeriesRequest {
+  // EquityType - what type of item is this?
+  equity_type.EquityType equity_type = 1;
+  // What is the symbol of the entity you want a time series on?
+  string symbol = 2;
+}
+
+message GetTimeSeriesResponse {
+  // EquityType - what type of item is this?
+  equity_type.EquityType equity_type = 1;
+  // What is the symbol of the entity you want a time series on?
+  string symbol = 2;
+  // TimeSeries of the data available
+  TimeSeries time_series = 3;
+}
